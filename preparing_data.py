@@ -20,8 +20,8 @@ def read_conf_results_files(general_path, config_name='temp_stats'):
             for f in files if f.startswith(config_name)]
 
 
-def associate_config_file(path, files):
-    pass
+def verify_associate_config_file(path, files):
+    return [f for f in files if os.path.exists(os.path.join(os.path.dirname(os.path.dirname(f)), 'conf.json'))]
 
 
 def read_json(p):
