@@ -14,14 +14,17 @@ cols_names = ['months', 'price_index', 'gdp_index', 'gdp_growth', 'unemployment'
 
 
 def read_conf_results_files(general_path, config_name='temp_stats'):
-    # Walks over directory collecting all conf.JSON files representing each simulation and its parameters
+    # Walks over directory collecting all files representing each simulation results
     return [os.path.join(dirpath, f)
             for dirpath, dirnames, files in os.walk(general_path)
             for f in files if f.startswith(config_name)]
 
 
-def verify_associate_config_file(path, files):
-    return [f for f in files if os.path.exists(os.path.join(os.path.dirname(os.path.dirname(f)), 'conf.json'))]
+def associate_config_file(files):
+    # Walks over directory collecting all configuration files associated with each simulation results
+    return [os.path.join(os.path.dirname(os.path.dirname(f)), 'conf.json')
+            for f in files
+            if os.path.exists(os.path.join(os.path.dirname(os.path.dirname(f)), 'conf.json'))]
 
 
 def read_json(p):
@@ -30,19 +33,10 @@ def read_json(p):
 
 
 def json_to_dict(df):
-    # Transforms JSON data into DataFrame, removing unchanging columns
+    # Transforms JSON data into DataFrame, removing unchanging columns, extracting data from list
     t = pd.DataFrame.from_dict(df, orient='index').drop(labels='RUN', axis=0).dropna(axis=1)
     t = t.drop(['LIST_NEW_AGE_GROUPS', 'TAXES_STRUCTURE', 'SIMPLIFY_POP_EVOLUTION'], axis=1)
-    try:
-        t = t.drop(['PROCESSING_STATES', 'HIRING_SAMPLE_SIZE'], axis=1)
-    except:
-        pass
     t['PROCESSING_ACPS'] = t['PROCESSING_ACPS'].apply(lambda x: x[0])
-    # Spelling bug
-    try:
-        t = t.drop('HOUSE_VANCANCY', axis=1)
-    except:
-        pass
     return t
 
 
@@ -125,7 +119,15 @@ def main(pathway, selected_col1, selected_col2):
 if __name__ == "__main__":
     p = r'\\storage1\carga\MODELO DINAMICO DE SIMULACAO\Exits_python\PS2020'
 
-    # 'firms', 'banks', 'construction', 'regional' and 'stats' data are always saved,
+    # 'temp_stats', 'firms', 'banks', 'construction', 'regional' and 'stats' data are always saved
+    config_file_name = 'temp_stats'
+
+    # Get list of files
+    list_of_files = read_conf_results_files(p, config_file_name)
+    # Get associated conf.json files
+    list_of_conf_files = associate_config_file(list_of_files)
+
+    print(f'Files of configuration are of the same size: {len(list_of_files) == len(list_of_conf_files)}')
 
     # target1 = 'average_qli'
     # target2 = 'unemployment'
