@@ -8,9 +8,7 @@ import os
 import numpy as np
 import pandas as pd
 
-cols_names = ['months', 'price_index', 'gdp_index', 'gdp_growth', 'unemployment', 'average_workers',
-              'families_wealth', 'families_savings', 'firms_wealth', 'firms_profit', 'gini_index',
-              'average_utility', 'inflation', 'average_qli']
+import cols_specification as cols
 
 
 def read_conf_results_files(general_path, config_name='temp_stats'):
@@ -27,31 +25,34 @@ def associate_config_file(files):
             if os.path.exists(os.path.join(os.path.dirname(os.path.dirname(f)), 'conf.json'))]
 
 
+def process_each_file(file_name, output_list, config_list, y=pd.DataFrame(), x=pd.DataFrame()):
+    # Extract both parameters from conf.JSON files and results of that given simulation from 'avg' folder
+    for i, each in enumerate(output_list):
+        y_test = pd.read_csv(each, sep=';', header=None)
+        # Testing minimum length of simulation
+        if len(y_test) >= 240:
+            y = y.append(y_test)
+            x = x.append(json_to_dict(read_json(config_list[i])))
+    # Provides names for the columns of results of simulation
+    try:
+        y.columns = cols.OUTPUT_DATA_SPEC[file_name.replace('temp_', '')]['columns']
+    except ValueError:
+        print('Column inconsistency')
+    return x, y
+
+
 def read_json(p):
     # Interpret JSON file of configuration with simulation given parameters
     return json.load(open(p))
 
 
-def json_to_dict(df):
+def json_to_dict(json_dict):
     # Transforms JSON data into DataFrame, removing unchanging columns, extracting data from list
-    t = pd.DataFrame.from_dict(df, orient='index').drop(labels='RUN', axis=0).dropna(axis=1)
-    t = t.drop(['LIST_NEW_AGE_GROUPS', 'TAXES_STRUCTURE', 'SIMPLIFY_POP_EVOLUTION'], axis=1)
-    t['PROCESSING_ACPS'] = t['PROCESSING_ACPS'].apply(lambda x: x[0])
-    return t
-
-
-def process_each_file(files_list, cols, y=pd.DataFrame(), x=pd.DataFrame()):
-    # Extract both parameters from conf.JSON files and results of that given simulation from 'avg' folder
-    for each in files_list:
-        # Removing 'conf.json' from path and accessing temp_stats.csv
-        y_test = pd.read_csv(each[:-9] + r'\avg\temp_stats.csv', sep=';', header=None)
-        # Testing last month of simulation
-        if len(y_test) == 240:
-            y = y.append(y_test)
-            x = x.append(json_to_dict(read_json(each)))
-    # Provides names for the columns of results of simulation
-    y.columns = cols
-    return x, y
+    df = pd.DataFrame.from_dict(json_dict, orient='index').drop(labels='RUN', axis=0).dropna(axis=1)
+    df = df.drop(['LIST_NEW_AGE_GROUPS', 'TAXES_STRUCTURE', 'SIMPLIFY_POP_EVOLUTION'], axis=1)
+    # Unpacking metropolis region info
+    df['PROCESSING_ACPS'] = df['PROCESSING_ACPS'].apply(lambda x: x[0])
+    return df
 
 
 def last_month(df):
@@ -116,18 +117,34 @@ def main(pathway, selected_col1, selected_col2):
     return data_x, data_y
 
 
+def unique_cols(df):
+    a = df.to_numpy()
+    return (a[0] == a).all(0)
+
+
+def main2(path, datafile_name):
+    # Get list of files
+    print('Reading configuration files...')
+    list_of_files = read_conf_results_files(p, output_data_file_name)
+    # Get associated conf.json files
+    print('Reading data files...')
+    list_of_conf_files = associate_config_file(list_of_files)
+    print(f'Files of configuration are of the same size: {len(list_of_files) == len(list_of_conf_files)}')
+    print('Processing files...')
+    x, y = process_each_file(output_data_file_name, list_of_files, list_of_conf_files)
+    return x, y
+
+
 if __name__ == "__main__":
     p = r'\\storage1\carga\MODELO DINAMICO DE SIMULACAO\Exits_python\PS2020'
+    # f'temp_' + {stats', 'firms', 'banks', 'construction' and 'regional'} are always saved
+    output_data_file_name = 'temp_stats'
 
-    # 'temp_stats', 'firms', 'banks', 'construction', 'regional' and 'stats' data are always saved
-    config_file_name = 'temp_stats'
+    X, Y = main2(p, output_data_file_name)
 
-    # Get list of files
-    list_of_files = read_conf_results_files(p, config_file_name)
-    # Get associated conf.json files
-    list_of_conf_files = associate_config_file(list_of_files)
 
-    print(f'Files of configuration are of the same size: {len(list_of_files) == len(list_of_conf_files)}')
+    # NEXT STEP, REDUCE Y TO LAST LINE BEFORE SAVING.
+    # CHECK X FOR COLUMNS WITHOUT VARIATION
 
     # target1 = 'average_qli'
     # target2 = 'unemployment'
