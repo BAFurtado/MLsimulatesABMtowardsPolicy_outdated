@@ -36,6 +36,7 @@ def process_each_file(file_name, output_list, config_list):
         # Testing minimum length of simulation
         if len(y_test) >= 120:
             y_test = y_test.tail(1)
+            y_test.drop('month', axis=1, inplace=True)
             y = y.append(y_test)
             x = x.append(json_to_dict(read_json(config_list[i])))
     return x, y
@@ -64,7 +65,7 @@ def selecting_y(df, col):
 
 
 def customizing_target(base, percentile=65, op=operator.gt):
-    # Discretizes results for a given percentile and a given operator (greater than or less than)
+    # Discrete results for a given percentile and a given operator (greater than or less than)
     return pd.DataFrame({'target': [1 if op.__call__(x, np.percentile(base, percentile)) else 0 for x in base]})
 
 
@@ -74,42 +75,24 @@ def averaging_targets(df1, df2):
 
 
 def dummies(data):
-    cat, num = [], []
+    cat, num = list(), list()
     for i in data.columns:
         if data[i].dtype == object:
             cat.append(i)
         else:
             num.append(i)
     cat = data[cat]
-    try:
-        cat = cat.drop(['PROCESSING_STATES'], axis=1)
-    except:
-        pass
     cat = pd.get_dummies(cat)
     num = data[num]
-    try:
-        num = num.drop(['HIRING_SAMPLE_SIZE'], axis=1)
-    except:
-        pass
     return pd.concat([num, cat], axis=1)
 
 
-def main(pathway, selected_col1, selected_col2):
-    # Runs the script for a given directory and two given targets
-    # Target1 set to percentile 80 and greater than
-    # Target2 set to percentile 20 and less than
-    file_list = read_conf_files(pathway)
-    data_x, data_y = process_each_file(file_list, cols_names)
-    # Getting last months' data
-    data_y = last_month(data_y)
-
-    # Excluding the binary operation on target and keeping all values
-
+def main_old(pathway, selected_col1, selected_col2):
+    data_x, data_y = read_xy()
     first_col = customizing_target(selecting_y(data_y, selected_col1))
     second_col = customizing_target(selecting_y(data_y, selected_col2), 35, operator.lt)
     data_y = averaging_targets(first_col, second_col)
 
-    data_x = dummies(data_x)
     name = 'pre_processed_data\\' + pathway[-4:] + '_' + selected_col1 + '_' + selected_col2 + '_x.csv'
     data_x.to_csv(name, index=False, sep=';')
     data_y.to_csv(name.replace('x.csv', 'y.csv'), index=False, sep=';')
@@ -124,13 +107,24 @@ def unique_cols(df):
 
 def drop_columns(df):
     cols_to_drop = unique_cols(df)
+    print(f'Dropping following cols...')
     for i, c in enumerate(df.columns):
         if cols_to_drop[i]:
+            print(c)
             df.drop(c, inplace=True, axis=1)
     return df
 
 
-def main2(path, datafile_name):
+def save_xy(x, y):
+    x.to_csv('x.csv', sep=';', index=False)
+    y.to_csv('y.csv', sep=';', index=False)
+
+
+def read_xy(x='x', y='y'):
+    return pd.read_csv(f'{x}.csv', sep=';'), pd.read_csv(f'{y}.csv', sep=';')
+
+
+def reading_saving_data(path, datafile_name):
     # Get list of files
     print('Reading configuration files...')
     list_of_files = read_conf_results_files(path, datafile_name)
@@ -142,9 +136,14 @@ def main2(path, datafile_name):
     x, y = process_each_file(output_data_file_name, list_of_files, list_of_conf_files)
     # Drop columns if configuration is exactly the same for all runs
     x = drop_columns(x)
+    x = dummies(x)
     print('Saving tables...')
-    x.to_csv('x.csv', sep=';')
-    y.to_csv('y.csv', sep=';')
+    save_xy(x, y)
+    return x, y
+
+
+def main(path, datafile_name='temp_stats'):
+    x, y = reading_saving_data(path, datafile_name=datafile_name)
     return x, y
 
 
@@ -153,8 +152,7 @@ if __name__ == "__main__":
     # f'temp_' + {stats', 'firms', 'banks', 'construction' and 'regional'} are always saved
     output_data_file_name = 'temp_stats'
 
-    X, Y = main2(p, output_data_file_name)
-
+    X, Y = main(p, output_data_file_name)
 
     # NEXT STEP, REDUCE Y TO LAST LINE BEFORE SAVING.
     # CHECK X FOR COLUMNS WITHOUT VARIATION

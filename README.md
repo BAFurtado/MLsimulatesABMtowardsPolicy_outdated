@@ -82,3 +82,13 @@ Output will be produced at the output folder
 You may change the parameters for the targets at main.py
 Or you may change the parameters of the ML in machines.py
 Or the size of the sample at generating_random_conf.py
+
+
+### To remember
+    Windows 64-bit packages of scikit-learn can be accelerated using scikit-learn-intelex.
+    More details are available here: https://intel.github.io/scikit-learn-intelex
+
+    For example:
+
+        $ conda install scikit-learn-intelex
+        $ python -m sklearnex my_application.py
