@@ -86,13 +86,13 @@ def drop_columns(df):
     return df
 
 
-def save_xy(x, y):
-    x.to_csv('output/x.csv', sep=';', index=False)
-    y.to_csv('output/y.csv', sep=';', index=False)
+def save_xy(x, y, name):
+    x.to_csv(f'pre_processed_data/x_{name}.csv', sep=';', index=False)
+    y.to_csv(f'pre_processed_data/y_{name}.csv', sep=';', index=False)
 
 
-def read_xy(x='x', y='y'):
-    return pd.read_csv(f'output/{x}.csv', sep=';'), pd.read_csv(f'output/{y}.csv', sep=';')
+def read_xy(name):
+    return pd.read_csv(f'pre_processed_data/x_{name}.csv', sep=';'), pd.read_csv(f'pre_processed_data/y_{name}.csv', sep=';')
 
 
 def reading_saving_data(path, datafile_name):
@@ -109,7 +109,7 @@ def reading_saving_data(path, datafile_name):
     x = drop_columns(x)
     x = dummies(x)
     print('Saving tables...')
-    save_xy(x, y)
+    save_xy(x, y, datafile_name)
     return x, y
 
 
