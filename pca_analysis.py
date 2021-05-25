@@ -8,12 +8,10 @@ from sklearn.preprocessing import StandardScaler
 
 
 def plot_correlation(data):
-
     corr = data.corr()
     sns.heatmap(corr,
                 xticklabels=corr.columns.values,
                 yticklabels=corr.columns.values)
-
     plt.show()
 
 
@@ -40,6 +38,8 @@ def run_pca(data):
 
 
 if __name__ == '__main__':
-    y = pd.read_csv('pre_processed_data/y.csv', sep=';')
+    output_datafile = 'temp_stats'
+    y = pd.read_csv(f'pre_processed_data/y_{output_datafile}.csv', sep=';')
     # plot_correlation(y)
     p, new_y = run_pca(y)
+

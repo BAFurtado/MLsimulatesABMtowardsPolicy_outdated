@@ -104,7 +104,7 @@ def reading_saving_data(path, datafile_name):
     list_of_conf_files = associate_config_file(list_of_files)
     print(f'Files of configuration are of the same size: {len(list_of_files) == len(list_of_conf_files)}')
     print('Processing files...')
-    x, y = process_each_file(output_data_file_name, list_of_files, list_of_conf_files)
+    x, y = process_each_file(datafile_name, list_of_files, list_of_conf_files)
     # Drop columns if configuration is exactly the same for all runs
     x = drop_columns(x)
     x = dummies(x)
