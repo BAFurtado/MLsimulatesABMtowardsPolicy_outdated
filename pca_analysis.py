@@ -40,6 +40,6 @@ def run_pca(data):
 
 
 if __name__ == '__main__':
-    y = pd.read_csv('y.csv', sep=';')
+    y = pd.read_csv('pre_processed_data/y.csv', sep=';')
     # plot_correlation(y)
     p, new_y = run_pca(y)

@@ -2,10 +2,8 @@
 """
 
 import json
-import operator
 import os
 
-import numpy as np
 import pandas as pd
 
 import cols_specification as cols
@@ -89,12 +87,12 @@ def drop_columns(df):
 
 
 def save_xy(x, y):
-    x.to_csv('x.csv', sep=';', index=False)
-    y.to_csv('y.csv', sep=';', index=False)
+    x.to_csv('output/x.csv', sep=';', index=False)
+    y.to_csv('output/y.csv', sep=';', index=False)
 
 
 def read_xy(x='x', y='y'):
-    return pd.read_csv(f'{x}.csv', sep=';'), pd.read_csv(f'{y}.csv', sep=';')
+    return pd.read_csv(f'output/{x}.csv', sep=';'), pd.read_csv(f'output/{y}.csv', sep=';')
 
 
 def reading_saving_data(path, datafile_name):
@@ -126,4 +124,3 @@ if __name__ == "__main__":
     output_data_file_name = 'temp_stats'
 
     X, Y = main(p, output_data_file_name)
-

@@ -1,6 +1,8 @@
-import pandas as pd
-import numpy as np
 import operator
+
+import numpy as np
+import pandas as pd
+
 from preparing_data import read_xy
 
 
@@ -22,11 +24,13 @@ def averaging_targets(df1, df2):
 def getting_target(y, col1, col2):
     first_col = customizing_target(selecting_y(y, col1[0]), col1[1], col1[2])
     second_col = customizing_target(selecting_y(y, col2[0]), col2[1], col2[2])
-    return averaging_targets(first_col, second_col)
+    target = averaging_targets(first_col, second_col)
+    target.to_csv(f'{col1}_{col2}.csv', sep=';', index=False)
+    return target
 
 
 if __name__ == '__main__':
     data_x, data_y = read_xy()
     target1 = 'gdp_index', 65, operator.gt
     target2 = 'gini_index', 35, operator.lt
-    target = getting_target(data_y, target1, target2)
+    t = getting_target(data_y, target1, target2)
