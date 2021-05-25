@@ -59,21 +59,6 @@ def last_month(df, month):
     return df[df.month == month].drop('month', axis=1)
 
 
-def selecting_y(df, col):
-    # Selects only results from last month of simulation
-    return df[col]
-
-
-def customizing_target(base, percentile=65, op=operator.gt):
-    # Discrete results for a given percentile and a given operator (greater than or less than)
-    return pd.DataFrame({'target': [1 if op.__call__(x, np.percentile(base, percentile)) else 0 for x in base]})
-
-
-def averaging_targets(df1, df2):
-    # Summarizes two target columns into one when both results are one
-    return pd.DataFrame({'target': [1 if x == 1 and y == 1 else 0 for x, y in zip(df1['target'], df2['target'])]})
-
-
 def dummies(data):
     cat, num = list(), list()
     for i in data.columns:
@@ -85,18 +70,6 @@ def dummies(data):
     cat = pd.get_dummies(cat)
     num = data[num]
     return pd.concat([num, cat], axis=1)
-
-
-def main_old(pathway, selected_col1, selected_col2):
-    data_x, data_y = read_xy()
-    first_col = customizing_target(selecting_y(data_y, selected_col1))
-    second_col = customizing_target(selecting_y(data_y, selected_col2), 35, operator.lt)
-    data_y = averaging_targets(first_col, second_col)
-
-    name = 'pre_processed_data\\' + pathway[-4:] + '_' + selected_col1 + '_' + selected_col2 + '_x.csv'
-    data_x.to_csv(name, index=False, sep=';')
-    data_y.to_csv(name.replace('x.csv', 'y.csv'), index=False, sep=';')
-    return data_x, data_y
 
 
 def unique_cols(df):
@@ -154,10 +127,3 @@ if __name__ == "__main__":
 
     X, Y = main(p, output_data_file_name)
 
-    # NEXT STEP, REDUCE Y TO LAST LINE BEFORE SAVING.
-    # CHECK X FOR COLUMNS WITHOUT VARIATION
-
-    # target1 = 'average_qli'
-    # target2 = 'unemployment'
-
-    # x, y = main(path, target1, target2)
