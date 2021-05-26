@@ -94,7 +94,8 @@ def save_xy(x, y, name):
 
 
 def read_xy(name):
-    return pd.read_csv(f'pre_processed_data/x_{name}.csv', sep=';'), pd.read_csv(f'pre_processed_data/y_{name}.csv', sep=';')
+    return pd.read_csv(f'pre_processed_data/x_{name}.csv', sep=';'), \
+           pd.read_csv(f'pre_processed_data/y_{name}.csv', sep=';')
 
 
 def reading_saving_data(path, datafile_name):

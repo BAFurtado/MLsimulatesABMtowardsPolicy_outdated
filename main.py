@@ -2,6 +2,7 @@ import operator
 import sys
 
 import pandas as pd
+import numpy as np
 from numpy import set_printoptions
 from sklearn.model_selection import train_test_split
 
@@ -14,21 +15,22 @@ import preparing_data
 set_printoptions(precision=4)
 
 
-def get_data(pathways, datafile_name, col1, col2):
+def get_data(path, datafile_name, col1, col2):
     try:
         x, y = preparing_data.read_xy(datafile_name)
         print('Loaded!')
     except FileNotFoundError:
-        x, y = preparing_data.main(pathways, datafile_name)
+        x, y = preparing_data.main(path, datafile_name)
     target = choosing_targets.getting_target(y, col1, col2)
+    target = np.ravel(target)
     return train_test_split(x, target, test_size=0.2, random_state=10)
 
 
 def main(path, datafile_name, col1, col2):
-    x, xt, y, yt = get_data(path, datafile_name, col1, col2)
+    x, x_test, y, y_test = get_data(path, datafile_name, col1, col2)
     # Running model
-    models = machines.run_classifiers(x, xt, y, yt)
-
+    models = machines.run_classifiers(x, x_test, y, y_test)
+    return models
     # # Generating random configuration data to test against optimal results
     # r = generating_random_conf.compound(name)
     # print('Generated dataset summary')
@@ -56,7 +58,7 @@ if __name__ == "__main__":
     output_datafile_name = 'temp_stats'
     target1 = 'gdp_index', 65, operator.gt
     target2 = 'gini_index', 35, operator.lt
-    main(p, output_datafile_name, target1, target2)
+    ms = main(p, output_datafile_name, target1, target2)
 
     # file_name = 'pre_processed_data\\' + path[-4:] + '_' + target1 + '_' + target2 + '_x.csv'
     #
