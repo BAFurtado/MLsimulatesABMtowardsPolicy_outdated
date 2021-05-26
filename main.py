@@ -30,7 +30,7 @@ def main(path, datafile_name, col1, col2):
     x, x_test, y, y_test = get_data(path, datafile_name, col1, col2)
     # Running model
     models = machines.run_classifiers(x, x_test, y, y_test)
-    return models
+
     # # Generating random configuration data to test against optimal results
     # r = generating_random_conf.compound(name)
     # print('Generated dataset summary')
@@ -50,6 +50,7 @@ def main(path, datafile_name, col1, col2):
     # print('Sum of ones: {}'.format(current['current'][1].sum()))
     # current.update(results)
     # descriptive_stats.print_conf_stats(current, name)
+    return models, x, x_test
 
 
 if __name__ == "__main__":
@@ -58,7 +59,7 @@ if __name__ == "__main__":
     output_datafile_name = 'temp_stats'
     target1 = 'gdp_index', 65, operator.gt
     target2 = 'gini_index', 35, operator.lt
-    ms = main(p, output_datafile_name, target1, target2)
+    ms, xl, xs = main(p, output_datafile_name, target1, target2)
 
     # file_name = 'pre_processed_data\\' + path[-4:] + '_' + target1 + '_' + target2 + '_x.csv'
     #
@@ -66,3 +67,5 @@ if __name__ == "__main__":
     #     sys.stdout = f
     #     x_train, x_test, y_train, y_test = get_data(path, target1, target2, file_name)
     #     main(x_train, x_test, y_train, y_test, file_name)
+
+    # np.std(x_test[c], ddof=1) / np.mean(x_test[c]) * 100
