@@ -21,13 +21,13 @@ def get_data(pathways, datafile_name, col1, col2):
     except FileNotFoundError:
         x, y = preparing_data.main(pathways, datafile_name)
     target = choosing_targets.getting_target(y, col1, col2)
-    return train_test_split(x, target, test_size=0.8, random_state=10)
+    return train_test_split(x, target, test_size=0.2, random_state=10)
 
 
-def main(pathways, datafile_name, col1, col2):
-    x, xt, y, yt = get_data(pathways, datafile_name, col1, col2)
+def main(path, datafile_name, col1, col2):
+    x, xt, y, yt = get_data(path, datafile_name, col1, col2)
     # Running model
-    # models = machines.run_classifiers(x, xt, y, yt)
+    models = machines.run_classifiers(x, xt, y, yt)
 
     # # Generating random configuration data to test against optimal results
     # r = generating_random_conf.compound(name)
@@ -53,10 +53,10 @@ def main(pathways, datafile_name, col1, col2):
 if __name__ == "__main__":
     p = r'\\storage1\carga\MODELO DINAMICO DE SIMULACAO\Exits_python\PS2020'
     # f'temp_' + {stats', 'firms', 'banks', 'construction' and 'regional'} are always saved
-    output_data_file_name = 'temp_stats'
+    output_datafile_name = 'temp_stats'
     target1 = 'gdp_index', 65, operator.gt
     target2 = 'gini_index', 35, operator.lt
-    main(p, output_data_file_name, target1, target2)
+    main(p, output_datafile_name, target1, target2)
 
     # file_name = 'pre_processed_data\\' + path[-4:] + '_' + target1 + '_' + target2 + '_x.csv'
     #

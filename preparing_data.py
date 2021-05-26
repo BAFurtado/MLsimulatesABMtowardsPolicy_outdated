@@ -83,6 +83,8 @@ def drop_columns(df):
         if cols_to_drop[i]:
             print(c)
             df.drop(c, inplace=True, axis=1)
+    if 'SEED' in df.columns:
+        df.drop('SEED', inplace=True, axis=1)
     return df
 
 
