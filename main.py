@@ -14,6 +14,8 @@ import preparing_data
 
 set_printoptions(precision=4)
 
+TEST_SIZE = .25
+
 
 def get_data(path, datafile_name, col1, col2):
     try:
@@ -23,11 +25,28 @@ def get_data(path, datafile_name, col1, col2):
         x, y = preparing_data.main(path, datafile_name)
     target = choosing_targets.getting_target(y, col1, col2)
     target = np.ravel(target)
-    return train_test_split(x, target, test_size=0.2, random_state=10)
+    return x, target
+
+
+def check_minimum_presence_parameter(x, y):
+    temp_x, x_test, temp_y, temp_y_test = train_test_split(x, y, test_size=TEST_SIZE, random_state=10)
+    for col in x_test.columns:
+        std = np.std(x_test[col], ddof=1)
+        mu = np.mean(x_test[col])
+        if mu == 0 or mu is np.nan:
+            cv = 0
+        else:
+            cv = std / mu * 100
+        if cv < 5:
+            print(f'Dropping {col} from X table...')
+            x.drop(col, inplace=True, axis=1)
+    return x, y
 
 
 def main(path, datafile_name, col1, col2):
-    x, x_test, y, y_test = get_data(path, datafile_name, col1, col2)
+    x, y = get_data(path, datafile_name, col1, col2)
+    x, y = check_minimum_presence_parameter(x, y)
+    x, x_test, y, y_test = train_test_split(x, y, test_size=TEST_SIZE, random_state=10)
     # Running model
     models = machines.run_classifiers(x, x_test, y, y_test)
 
