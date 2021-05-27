@@ -71,60 +71,25 @@ INITIAL_RENTAL_PRICE = {'max': .01, 'min': 0, 'distribution': 'normal'}
 # LICENSES ARE URBANIZED LOTS AVAILABLE FOR CONSTRUCTION PER NEIGHBORHOOD PER MONTH.
 # If random, it will vary between 1 and 0, otherwise an integer
 T_LICENSES_PER_REGION = {'alternatives': [1, 0], 'distribution': 'choice'}
-PERCENT_CONSTRUCTION_FIRMS = 0.03
+PERCENT_CONSTRUCTION_FIRMS = {'max': .2, 'min': 0, 'distribution': 'normal'}
 # Months that construction firm will divide its income into monthly revenue installments.
 # Although prices are accounted for at once.
-CONSTRUCTION_ACC_CASH_FLOW = 24
+CONSTRUCTION_ACC_CASH_FLOW = {'max': 100, 'min': 1, 'distribution': 'normal'}
 # Cost of lot in PERCENTAGE of construction
-LOT_COST = .15
+LOT_COST = {'max': .7, 'min': 0, 'distribution': 'normal'}
+PRIVATE_TRANSIT_COST = {'max': .5, 'min': 0, 'distribution': 'normal'}
+PUBLIC_TRANSIT_COST = {'max': .5, 'min': 0, 'distribution': 'normal'}
 
-# Families run parameters (on average) for year 2000, or no information. 2010 uses APs average data
-MEMBERS_PER_FAMILY = 2.5
-# Initial percentage of vacant houses
-HOUSE_VACANCY = .1
-
-MARRIAGE_CHECK_PROBABILITY = .034
-
-PRIVATE_TRANSIT_COST = 0.25
-PUBLIC_TRANSIT_COST = 0.05
-
-PROCESSING_ACPS = ['BRASILIA']
-
-
-# selecting the ACPs (Population Concentration Areas)
-# ACPs and their STATES - ALL ACPs written in UPPER CASE and without  ACCENT
-# STATE    -       ACPs
-# ------------------------
-# "AM"     -      "MANAUS"
-# "PA"     -      "BELEM"
-# "AP"     -      "MACAPA"
-# "MA"     -      "SAO LUIS", "TERESINA"
-# "PI"     -      "TERESINA"
-# "CE"     -      "FORTALEZA", "CRAJUBAR" - CRAJUBAR refers to JUAZEIRO DO NORTE - CRATO - BARBALHA
-# "RN"     -      "NATAL"
-# "PB"     -      "JOAO PESSOA", "CAMPINA GRANDE"
-# "PE"     -      "RECIFE", "PETROLINA - JUAZEIRO"
-# "AL"     -      "MACEIO"
-# "SE"     -      "ARACAJU"
-# "BA"     -      "SALVADOR", "FEIRA DE SANTANA", "ILHEUS - ITABUNA", "PETROLINA - JUAZEIRO"
-# "MG"     -      "BELO HORIZONTE", "JUIZ DE FORA", "IPATINGA", "UBERLANDIA"
-# "ES"     -      "VITORIA"
-# "RJ"     -      "VOLTA REDONDA - BARRA MANSA", "RIO DE JANEIRO", "CAMPOS DOS GOYTACAZES"
-# "SP"     -      "SAO PAULO", "CAMPINAS", "SOROCABA", "SAO JOSE DO RIO PRETO", "SANTOS", "JUNDIAI",
-#                 "SAO JOSE DOS CAMPOS", "RIBEIRAO PRETO"
-# "PR"     -      "CURITIBA" "LONDRINA", "MARINGA"
-# "SC"     -      "JOINVILLE", "FLORIANOPOLIS"
-# "RS"     -      "PORTO ALEGRE", "NOVO HAMBURGO - SAO LEOPOLDO", "CAXIAS DO SUL", "PELOTAS - RIO GRANDE"
-# "MS"     -      "CAMPO GRANDE"
-# "MT"     -      "CUIABA"
-# "GO"     -      "GOIANIA", "BRASILIA"
-# "DF"     -      "BRASILIA"
-
-# Percentage of actual population to run the simulation
+PROCESSING_ACPS = {'alternatives' : ['ARACAJU', 'BELEM', 'BELO HORIZONTE', 'BRASILIA', 'CAMPINA GRANDE', 'CAMPINAS',
+                                     'CAMPO GRANDE', 'CAMPOS DOS GOYTACAZES', 'CAXIAS DO SUL', 'CRAJUBAR', 'CUIABA',
+                                     'CURITIBA', 'FEIRA DE SANTANA',
+                   'FLORIANOPOLIS', 'FORTALEZA', 'GOIANIA', 'ILHEUS - ITABUNA', 'IPATINGA', 'JOAO PESSOA', 'JOINVILLE',
+                   'JUIZ DE FORA', 'JUNDIAI', 'LONDRINA', 'MACAPA', 'MACEIO', 'MANAUS', 'MARINGA', 'NATAL',
+                   'NOVO HAMBURGO - SAO LEOPOLDO', 'PELOTAS - RIO GRANDE', 'PETROLINA - JUAZEIRO', 'PORTO ALEGRE',
+                   'RECIFE', 'RIBEIRAO PRETO', 'RIO DE JANEIRO', 'SALVADOR', 'SANTOS', 'SAO JOSE DO RIO PRETO',
+                   'SAO JOSE DOS CAMPOS', 'SAO LUIS', 'SAO PAULO', 'SOROCABA', 'TERESINA', 'UBERLANDIA', 'VITORIA',
+                   'VOLTA REDONDA - BARRA MANSA'], 'distribution': 'choice'}
 # Minimum value to run depends on the size of municipality 0,001 is recommended minimum
-PERCENTAGE_ACTUAL_POP = 0.01
-
-# Write exactly like the list above
-
+PERCENTAGE_ACTUAL_POP = {'max': 1, 'min': 0, 'distribution': 'normal'}
 # Selecting the starting year to build the Agents, can be: 1991, 2000 or 2010
-STARTING_DAY =
+STARTING_DAY = {'alternatives': ['2010-01-01', '2000-01-01'], 'distribution': 'choice'}
