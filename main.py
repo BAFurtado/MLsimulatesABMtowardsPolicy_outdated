@@ -46,12 +46,12 @@ def check_minimum_presence_parameter(x, y):
 def main(path, datafile_name, col1, col2):
     x, y = get_data(path, datafile_name, col1, col2)
     x, y = check_minimum_presence_parameter(x, y)
-    x, x_test, y, y_test = train_test_split(x, y, test_size=TEST_SIZE, random_state=10)
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=TEST_SIZE, random_state=10)
     # Running model
-    models = machines.run_classifiers(x, x_test, y, y_test)
+    models = machines.run_classifiers(x_train, x_test, y_train, y_test)
 
     # # Generating random configuration data to test against optimal results
-    # r = generating_random_conf.compound(name)
+    r = generating_random_conf.compound(x_train)
     # print('Generated dataset summary')
     #
     # # Predicting results using machine on generated set of random parameters
