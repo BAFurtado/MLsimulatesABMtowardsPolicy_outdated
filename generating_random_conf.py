@@ -15,8 +15,11 @@ def pre_process(data):
 
 
 def compound(x, n=10000):
+    # Function will break if n is too small < 1000
+    # so that not enough columns will be sampled for PROCESSING_ACPS, for example
     param = to_dict_from_module()
     samples = pre_process(x)
+    df = pd.DataFrame()
     data = dict()
     # Either choice or normal
     for p in param:
@@ -27,14 +30,15 @@ def compound(x, n=10000):
             choices = [i for i in samples.index if p in i]
             if choices:
                 m = len(choices)
-                data[choices[0]] = np.random.choice([1, 0], n, p=[1/m] * m)
-                for j in range(1, m):
-                    data[choices[j]] = abs(data[choices[0]] - 1)
-        return pd.DataFrame(data)
+                choices_vector = pd.DataFrame(np.random.choice(choices, n, p=[1 / m] * m))
+                temp = pd.get_dummies(choices_vector)
+                temp.columns = choices
+                df = pd.concat([temp, df], axis=1)
+    return pd.concat([df, pd.DataFrame(data)], axis=1)
 
 
 if __name__ == '__main__':
     path = r'\\storage4\carga\MODELO DINAMICO DE SIMULACAO\Exits_python\JULY'
-    file_name = 'pre_processed_data\\' + path[-4:] + '_x.csv'
-    d = compound(file_name)
+    file_name = f'pre_processed_data/x_temp_stats.csv'
+    d = compound(pd.read_csv(file_name, sep=';'))
     print(d.head())
