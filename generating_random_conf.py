@@ -1,10 +1,9 @@
-import numpy.random
+import numpy as np
 import pandas as pd
 
 import parameters_restriction as params
-import preparing_data
 
-numpy.random.seed(0)
+np.random.seed(0)
 
 
 def to_dict_from_module():
@@ -15,38 +14,23 @@ def pre_process(data):
     return data.describe().T[['mean', 'std']]
 
 
-def handling_choices_keys(param):
-    n_param = dict()
-    for p in param:
-        if param[p]['distribution'] == 'choice':
-            for a in param[p]['alternatives']:
-                # Adding transformed key to original parameters dictionary
-                n_param[f"{p}_{a}"] = {'alternatives': [True, False], 'distribution': 'choice'}
-        else:
-            n_param[p] = param[p]
-    return n_param
-
-
 def compound(x, n=10000):
     param = to_dict_from_module()
     samples = pre_process(x)
-    param = handling_choices_keys(param)
     data = dict()
     # Either choice or normal
     for p in param:
         if p in samples.index:
             if param[p]['distribution'] == 'normal':
-                data[p] = numpy.random.normal(samples.loc[p, 'mean'], samples.loc[p, 'std'] * 2, n)
-    data['PROCESSING_ACPS'] = numpy.random.choice(d_acps, n)
-    for each in d_bool:
-        data[each] = numpy.random.choice(['True', 'False'], n)
-    df = pd.DataFrame(data)
-    temp1 = df[d_bool + ['PROCESSING_ACPS']]
-    temp2 = df[df.columns.difference(d_bool + ['PROCESSING_ACPS'])]
-    temp2 = temp2.fillna(0)
-    for col in temp2.columns:
-        temp2[col] = temp2[col].apply(lambda x: temp2[col].mean() if x < 0 else x)
-    return preparing_data.dummies(pd.concat([temp1, temp2], axis=1))
+                data[p] = np.random.normal(samples.loc[p, 'mean'], samples.loc[p, 'std'] * 2, n)
+        else:
+            choices = [i for i in samples.index if p in i]
+            if choices:
+                m = len(choices)
+                data[choices[0]] = np.random.choice([1, 0], n, p=[1/m] * m)
+                for j in range(1, m):
+                    data[choices[j]] = abs(data[choices[0]] - 1)
+        return pd.DataFrame(data)
 
 
 if __name__ == '__main__':
