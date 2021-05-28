@@ -52,24 +52,24 @@ def main(path, datafile_name, col1, col2):
 
     # # Generating random configuration data to test against optimal results
     r = generating_random_conf.compound(x_train)
-    # print('Generated dataset summary')
+    print('Generated expanded configuration dataset')
     #
     # # Predicting results using machine on generated set of random parameters
-    # results = dict()
-    # for key in models.keys():
-    #     yr = machines.predict(models[key], r[x.columns.tolist()])
-    #     print('Sum of ones {}: {}'.format(key, yr.sum()))
-    #     yr = pd.DataFrame({key: yr.tolist()})
-    #     results[key] = [r, yr]
+    results = dict()
+    for key in models.keys():
+        yr = machines.predict(models[key], r[x.columns.tolist()])
+        print('Sum of ones {}: {}'.format(key, yr.sum()))
+        yr = pd.DataFrame({key: yr.tolist()})
+        results[key] = [r, yr]
     #
     # # Output basic descriptive stats
     # # Sending over X and Y as lists in a dictionary for current and each model
-    # current = {'current': [pd.concat([x, xt], axis=0).reset_index(),
-    #                        pd.concat([y, yt], axis=0, ignore_index=True).to_frame('current')]}
-    # print('Sum of ones: {}'.format(current['current'][1].sum()))
-    # current.update(results)
-    # descriptive_stats.print_conf_stats(current, name)
-    return models, x, x_test
+    current = {'current': [pd.concat([x_train, x_test], axis=0).reset_index(),
+                           pd.concat([y_train, y_test], axis=0, ignore_index=True).to_frame('current')]}
+    print('Sum of ones: {}'.format(current['current'][1].sum()))
+    current.update(results)
+    descriptive_stats.print_conf_stats(current, path)
+    return models, x_train, x_test
 
 
 if __name__ == "__main__":
@@ -79,12 +79,3 @@ if __name__ == "__main__":
     target1 = 'gdp_index', 65, operator.gt
     target2 = 'gini_index', 35, operator.lt
     ms, xl, xs = main(p, output_datafile_name, target1, target2)
-
-    # file_name = 'pre_processed_data\\' + path[-4:] + '_' + target1 + '_' + target2 + '_x.csv'
-    #
-    # with open('outputs\\scores' + '_' + target1 + '_' + target2 + '.txt', 'w') as f:
-    #     sys.stdout = f
-    #     x_train, x_test, y_train, y_test = get_data(path, target1, target2, file_name)
-    #     main(x_train, x_test, y_train, y_test, file_name)
-
-    # np.std(x_test[c], ddof=1) / np.mean(x_test[c]) * 100
