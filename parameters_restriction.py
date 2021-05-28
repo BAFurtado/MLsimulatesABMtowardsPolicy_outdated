@@ -17,7 +17,7 @@ LABOR_MARKET = {'max': 1, 'min': 0, 'distribution': 'normal'}
 # Percentage of employees firms hired by distance
 PCT_DISTANCE_HIRING = {'max': 1, 'min': 0, 'distribution': 'normal'}
 # Ignore unemployment in wage base calculation
-WAGE_IGNORE_UNEMPLOYMENT = {'alternatives': [1, 0], 'distribution': 'choice'}
+WAGE_IGNORE_UNEMPLOYMENT = {'alternatives': [True, False], 'distribution': 'choice'}
 # Candidate sample size for the labor market
 HIRING_SAMPLE_SIZE = {'max': 100, 'min': 1, 'distribution': 'normal'}
 # TAXES
@@ -27,8 +27,8 @@ TAX_ESTATE_TRANSACTION = {'max': .01, 'min': .0001, 'distribution': 'normal'}
 TAX_FIRM = {'max': .6, 'min': .01, 'distribution': 'normal'}
 TAX_PROPERTY = {'max': .01, 'min': .0001, 'distribution': 'normal'}
 # GOVERNMENT
-ALTERNATIVE0 = {'alternatives': [1, 0], 'distribution': 'choice'}
-FPM_DISTRIBUTION = {'alternatives': [1, 0], 'distribution': 'choice'}
+ALTERNATIVE0 = {'alternatives': [True, False], 'distribution': 'choice'}
+FPM_DISTRIBUTION = {'alternatives': [True, False], 'distribution': 'choice'}
 POLICY_COEFFICIENT = {'max': .4, 'min': 0, 'distribution': 'normal'}
 # Policies alternatives may include: 'buy', 'rent' or 'wage' or 'no_policy'. For no policy set to empty strings ''
 # POLICY_COEFFICIENT needs to be > 0.
@@ -62,15 +62,13 @@ MAX_OFFER_DISCOUNT = {'max': 1, 'min': .4, 'distribution': 'normal'}
 # Percentage of households pursuing new location
 PERCENTAGE_ENTERING_ESTATE_MARKET = {'max': .01, 'min': 0, 'distribution': 'normal'}
 NEIGHBORHOOD_EFFECT = {'max': 5, 'min': 0, 'distribution': 'normal'}
-
 # RENTAL
 RENTAL_SHARE = {'max': 1, 'min': 0, 'distribution': 'normal'}
 INITIAL_RENTAL_PRICE = {'max': .01, 'min': 0, 'distribution': 'normal'}
-
 # CONSTRUCTION
 # LICENSES ARE URBANIZED LOTS AVAILABLE FOR CONSTRUCTION PER NEIGHBORHOOD PER MONTH.
 # If random, it will vary between 1 and 0, otherwise an integer
-T_LICENSES_PER_REGION = {'alternatives': [1, 0], 'distribution': 'choice'}
+T_LICENSES_PER_REGION = {'alternatives': [True, False], 'distribution': 'choice'}
 PERCENT_CONSTRUCTION_FIRMS = {'max': .2, 'min': 0, 'distribution': 'normal'}
 # Months that construction firm will divide its income into monthly revenue installments.
 # Although prices are accounted for at once.
@@ -79,16 +77,19 @@ CONSTRUCTION_ACC_CASH_FLOW = {'max': 100, 'min': 1, 'distribution': 'normal'}
 LOT_COST = {'max': .7, 'min': 0, 'distribution': 'normal'}
 PRIVATE_TRANSIT_COST = {'max': .5, 'min': 0, 'distribution': 'normal'}
 PUBLIC_TRANSIT_COST = {'max': .5, 'min': 0, 'distribution': 'normal'}
-
-PROCESSING_ACPS = {'alternatives' : ['ARACAJU', 'BELEM', 'BELO HORIZONTE', 'BRASILIA', 'CAMPINA GRANDE', 'CAMPINAS',
-                                     'CAMPO GRANDE', 'CAMPOS DOS GOYTACAZES', 'CAXIAS DO SUL', 'CRAJUBAR', 'CUIABA',
-                                     'CURITIBA', 'FEIRA DE SANTANA',
-                   'FLORIANOPOLIS', 'FORTALEZA', 'GOIANIA', 'ILHEUS - ITABUNA', 'IPATINGA', 'JOAO PESSOA', 'JOINVILLE',
-                   'JUIZ DE FORA', 'JUNDIAI', 'LONDRINA', 'MACAPA', 'MACEIO', 'MANAUS', 'MARINGA', 'NATAL',
-                   'NOVO HAMBURGO - SAO LEOPOLDO', 'PELOTAS - RIO GRANDE', 'PETROLINA - JUAZEIRO', 'PORTO ALEGRE',
-                   'RECIFE', 'RIBEIRAO PRETO', 'RIO DE JANEIRO', 'SALVADOR', 'SANTOS', 'SAO JOSE DO RIO PRETO',
-                   'SAO JOSE DOS CAMPOS', 'SAO LUIS', 'SAO PAULO', 'SOROCABA', 'TERESINA', 'UBERLANDIA', 'VITORIA',
-                   'VOLTA REDONDA - BARRA MANSA'], 'distribution': 'choice'}
+PROCESSING_ACPS = {'alternatives': ['ARACAJU', 'BELEM', 'BELO HORIZONTE', 'BRASILIA', 'CAMPINA GRANDE', 'CAMPINAS',
+                                    'CAMPO GRANDE', 'CAMPOS DOS GOYTACAZES', 'CAXIAS DO SUL', 'CRAJUBAR', 'CUIABA',
+                                    'CURITIBA', 'FEIRA DE SANTANA',
+                                    'FLORIANOPOLIS', 'FORTALEZA', 'GOIANIA', 'ILHEUS - ITABUNA', 'IPATINGA',
+                                    'JOAO PESSOA', 'JOINVILLE', 'JUIZ DE FORA', 'JUNDIAI', 'LONDRINA', 'MACAPA',
+                                    'MACEIO', 'MANAUS', 'MARINGA', 'NATAL',
+                                    'NOVO HAMBURGO - SAO LEOPOLDO', 'PELOTAS - RIO GRANDE', 'PETROLINA - JUAZEIRO',
+                                    'PORTO ALEGRE',
+                                    'RECIFE', 'RIBEIRAO PRETO', 'RIO DE JANEIRO', 'SALVADOR', 'SANTOS',
+                                    'SAO JOSE DO RIO PRETO',
+                                    'SAO JOSE DOS CAMPOS', 'SAO LUIS', 'SAO PAULO', 'SOROCABA', 'TERESINA',
+                                    'UBERLANDIA', 'VITORIA',
+                                    'VOLTA REDONDA - BARRA MANSA'], 'distribution': 'choice'}
 # Minimum value to run depends on the size of municipality 0,001 is recommended minimum
 PERCENTAGE_ACTUAL_POP = {'max': 1, 'min': 0, 'distribution': 'normal'}
 # Selecting the starting year to build the Agents, can be: 1991, 2000 or 2010

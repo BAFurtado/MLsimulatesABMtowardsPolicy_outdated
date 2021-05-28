@@ -1,36 +1,42 @@
 import numpy.random
 import pandas as pd
 
+import parameters_restriction as params
 import preparing_data
 
 numpy.random.seed(0)
 
-d_bool = ["ALTERNATIVE0", "FPM_DISTRIBUTION", "WAGE_IGNORE_UNEMPLOYMENT"]
 
-d_normal = ["HOUSE_VACANCY", "MARKUP", "MEMBERS_PER_FAMILY", "PERCENTAGE_ACTUAL_POP", "PRODUCTION_MAGNITUDE",
-            "SIZE_MARKET", "PERCENTAGE_CHECK_NEW_LOCATION", "TAX_CONSUMPTION", "TAX_ESTATE_TRANSACTION",
-            "TAX_FIRM", "TAX_LABOR", "TAX_PROPERTY", "TREASURE_INTO_SERVICES", "ALPHA", "BETA", "LABOR_MARKET",
-            "PCT_DISTANCE_HIRING", "STICKY_PRICES"]
-
-d_acps = ['ARACAJU', 'BELEM', 'BELO HORIZONTE', 'BRASILIA', 'CAMPINA GRANDE', 'CAMPINAS', 'CAMPO GRANDE',
-          'CAMPOS DOS GOYTACAZES', 'CAXIAS DO SUL', 'CUIABA', 'CURITIBA', 'LONDRINA', 'FEIRA DE SANTANA',
-          'FLORIANOPOLIS', 'FORTALEZA', 'GOIANIA', 'ILHEUS - ITABUNA', 'IPATINGA', 'JOAO PESSOA', 'JOINVILLE',
-          'JUAZEIRO DO NORTE - CRATO - BARBALHA', 'JUIZ DE FORA', 'JUNDIAI', 'MACAPA', 'MACEIO', 'MANAUS',
-          'MARINGA', 'NATAL', 'NOVO HAMBURGO - SAO LEOPOLDO', 'PELOTAS - RIO GRANDE', 'PETROLINA - JUAZEIRO',
-          'PORTO ALEGRE', 'RECIFE', 'RIBEIRAO PRETO', 'RIO DE JANEIRO', 'SALVADOR', 'SANTOS', 'SAO JOSE DO RIO PRETO',
-          'SAO JOSE DOS CAMPOS', 'SAO LUIS', 'SAO PAULO', 'SOROCABA', 'TERESINA', 'UBERLANDIA', 'VITORIA',
-          'VOLTA REDONDA - BARRA MANSA']
+def to_dict_from_module():
+    return {k: getattr(params, k) for k in dir(params) if not k.startswith('_')}
 
 
 def pre_process(data):
     return data.describe().T[['mean', 'std']]
 
 
+def handling_choices_keys(param):
+    n_param = dict()
+    for p in param:
+        if param[p]['distribution'] == 'choice':
+            for a in param[p]['alternatives']:
+                # Adding transformed key to original parameters dictionary
+                n_param[f"{p}_{a}"] = {'alternatives': [True, False], 'distribution': 'choice'}
+        else:
+            n_param[p] = param[p]
+    return n_param
+
+
 def compound(x, n=10000):
+    param = to_dict_from_module()
     samples = pre_process(x)
+    param = handling_choices_keys(param)
     data = dict()
-    for each in d_normal:
-        data[each] = numpy.random.normal(samples.loc[each, 'mean'], samples.loc[each, 'std'] * 2, n)
+    # Either choice or normal
+    for p in param:
+        if p in samples.index:
+            if param[p]['distribution'] == 'normal':
+                data[p] = numpy.random.normal(samples.loc[p, 'mean'], samples.loc[p, 'std'] * 2, n)
     data['PROCESSING_ACPS'] = numpy.random.choice(d_acps, n)
     for each in d_bool:
         data[each] = numpy.random.choice(['True', 'False'], n)
