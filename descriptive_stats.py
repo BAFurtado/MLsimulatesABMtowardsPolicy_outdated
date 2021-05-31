@@ -2,7 +2,7 @@ import pandas as pd
 pd.options.display.float_format = '{:,.2f}'.format
 
 
-def print_conf_stats(kwargs):
+def print_conf_stats(kwargs, name):
     # Dict contains X and Y as lists in a dictionary for current and each model
     df = pd.DataFrame()
     for key in kwargs.keys():
@@ -14,4 +14,4 @@ def print_conf_stats(kwargs):
         res = pd.concat([temp2, temp3.T], axis=1)
         res.columns = ['tot_' + key, key + '_0', key + '_1']
         df = pd.concat([df, res], axis=1)
-    df.to_csv('pre_processed_data/comparison_analysis.csv', sep=';', float_format='%.6f')
+    df.to_csv(f'pre_processed_data/comparison_analysis_{name}.csv', sep=';', float_format='%.6f')
