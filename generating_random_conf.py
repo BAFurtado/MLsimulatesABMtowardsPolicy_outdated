@@ -15,7 +15,7 @@ def pre_process(data):
     return data.describe().T[['mean', 'std']]
 
 
-def compound(x, n=10000):
+def compound(x, n):
     # Function will break if n is too small < 1000
     # so that not enough columns will be sampled for PROCESSING_ACPS, for example
     param = to_dict_from_module()
@@ -43,5 +43,5 @@ def compound(x, n=10000):
 if __name__ == '__main__':
     path = r'\\storage4\carga\MODELO DINAMICO DE SIMULACAO\Exits_python\JULY'
     file_name = f'pre_processed_data/x_temp_stats.csv'
-    d = compound(pd.read_csv(file_name, sep=';'))
+    d = compound(pd.read_csv(file_name, sep=';'), 10000)
     print(d.head())

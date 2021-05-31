@@ -1,8 +1,9 @@
 import operator
 import os
 import pickle
-import pandas as pd
+
 import numpy as np
+import pandas as pd
 from numpy import set_printoptions
 from sklearn.model_selection import train_test_split
 
@@ -43,9 +44,10 @@ def check_minimum_presence_parameter(x, y):
     return x, y
 
 
-def main(path, datafile_name, col1, col2):
-    if os.path.exists(f'pre_processed_data/results_data_{datafile_name}'):
-        with open(f'pre_processed_data/results_data_{datafile_name}', 'rb') as f:
+def main(path, datafile_name, col1, col2, param_size):
+    output_name = f'{col1[0]}_{col2[0]}_{datafile_name}'
+    if os.path.exists(f'pre_processed_data/results_data_{output_name}'):
+        with open(f'pre_processed_data/results_data_{output_name}', 'rb') as f:
             current, models, x_train, x_test = pickle.load(f)
             print('Loaded pre processed data...')
     else:
@@ -56,7 +58,7 @@ def main(path, datafile_name, col1, col2):
         models = machines.run_classifiers(x_train, x_test, y_train, y_test)
 
         # # Generating random configuration data to test against optimal results
-        r = generating_random_conf.compound(x_train)
+        r = generating_random_conf.compound(x_train, param_size)
         print('Generated expanded configuration dataset')
         #
         # # Predicting results using machine on generated set of random parameters
@@ -75,16 +77,17 @@ def main(path, datafile_name, col1, col2):
 
         with open(f'pre_processed_data/results_data_{datafile_name}', 'wb') as f:
             pickle.dump([current, models, x_train, x_test], f)
-    print('Sum of ones: {}'.format(current['current'][1].sum()))
-    descriptive_stats.print_conf_stats(current, datafile_name)
+    print(f"Sum of ones: {current['current'][1].sum()}")
+    descriptive_stats.print_conf_stats(current, output_name)
     return models, x_train, x_test
 
 
 if __name__ == "__main__":
     p = r'\\storage1\carga\MODELO DINAMICO DE SIMULACAO\Exits_python\PS2020'
     # f'temp_' + {stats', 'firms', 'banks', 'construction' and 'regional'} are always saved
-    output_datafile_name = 'temp_stats'
+    file = 'temp_stats'
+    sample_size = 100000
     # Currently, all data refer to the duo 'gdp_index' and 'gini_index'
     target1 = 'gdp_index', 65, operator.gt
     target2 = 'gini_index', 35, operator.lt
-    ms, xl, xs = main(p, output_datafile_name, target1, target2)
+    ms, xl, xs = main(p, file, target1, target2, sample_size)
