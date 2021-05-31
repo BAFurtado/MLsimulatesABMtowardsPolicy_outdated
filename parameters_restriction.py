@@ -94,3 +94,4 @@ PROCESSING_ACPS = {'alternatives': ['ARACAJU', 'BELEM', 'BELO HORIZONTE', 'BRASI
 PERCENTAGE_ACTUAL_POP = {'max': 1, 'min': 0, 'distribution': 'normal'}
 # Selecting the starting year to build the Agents, can be: 1991, 2000 or 2010
 STARTING_DAY = {'alternatives': ['2010-01-01', '2000-01-01'], 'distribution': 'choice'}
+TOTAL_DAYS = {'max': 14610, 'min': 1826, 'distribution': 'normal'}

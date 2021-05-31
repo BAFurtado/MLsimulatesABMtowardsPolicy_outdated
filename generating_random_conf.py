@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import scipy.stats as stats
 
 import parameters_restriction as params
 
@@ -25,7 +26,9 @@ def compound(x, n=10000):
     for p in param:
         if p in samples.index:
             if param[p]['distribution'] == 'normal':
-                data[p] = np.random.normal(samples.loc[p, 'mean'], samples.loc[p, 'std'] * 2, n)
+                lower, upper = param[p]['min'], param[p]['max']
+                mu, sigma = samples.loc[p, 'mean'], samples.loc[p, 'std'] * 2
+                data[p] = stats.truncnorm((lower - mu) / sigma, (upper - mu) / sigma, loc=mu, scale=sigma).rvs(n)
         else:
             choices = [i for i in samples.index if p in i]
             if choices:
