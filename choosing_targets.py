@@ -1,3 +1,4 @@
+import os
 import operator
 
 import numpy as np
@@ -22,10 +23,14 @@ def averaging_targets(df1, df2):
 
 
 def getting_target(y, col1, col2):
+    name = f'pre_processed_data/{col1[0]}_{col1[1]}_{col2[0]}_{col2[1]}.csv'
+    if os.path.exists(name):
+        print('Loading existing targets...')
+        return pd.read_csv(name, sep=';')
     first_col = customizing_target(selecting_y(y, col1[0]), col1[1], col1[2])
     second_col = customizing_target(selecting_y(y, col2[0]), col2[1], col2[2])
     target = averaging_targets(first_col, second_col)
-    target.to_csv(f'pre_processed_data/{col1[0]}_{col2[0]}.csv', sep=';', index=False)
+    target.to_csv(name, sep=';', index=False)
     return target
 
 

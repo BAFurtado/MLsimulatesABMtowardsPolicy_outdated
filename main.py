@@ -45,7 +45,7 @@ def check_minimum_presence_parameter(x, y):
 
 
 def main(path, datafile_name, col1, col2, param_size):
-    output_name = f'{col1[0]}_{col2[0]}_{datafile_name}'
+    output_name = f'{col1[0]}_{col1[1]}_{col2[0]}_{col2[1]}_{datafile_name}'
     if os.path.exists(f'pre_processed_data/results_data_{output_name}'):
         with open(f'pre_processed_data/results_data_{output_name}', 'rb') as f:
             current, models, x_train, x_test = pickle.load(f)
@@ -86,8 +86,8 @@ if __name__ == "__main__":
     p = r'\\storage1\carga\MODELO DINAMICO DE SIMULACAO\Exits_python\PS2020'
     # f'temp_' + {stats', 'firms', 'banks', 'construction' and 'regional'} are always saved
     file = 'temp_stats'
-    sample_size = 100000
+    sample_size = 200000
     # Currently, all data refer to the duo 'gdp_index' and 'gini_index'
-    target1 = 'gdp_index', 65, operator.gt
-    target2 = 'gini_index', 35, operator.lt
+    target1 = 'gdp_index', 80, operator.gt
+    target2 = 'gini_index', 20, operator.lt
     ms, xl, xs = main(p, file, target1, target2, sample_size)

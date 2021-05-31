@@ -1,4 +1,4 @@
-# Machine Learning simulates Agent-based Model2
+# Machine Learning simulates Agent-based Model towards Policy-Making
 
 This is a development of an initial attempt, available here:
 https://arxiv.org/abs/1712.04429v2 based on a new, more complete version of PolicySpace2.

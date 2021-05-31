@@ -6,7 +6,7 @@ import os
 
 import pandas as pd
 
-import cols_specification as cols
+from utils import cols_specification as cols
 
 
 def read_conf_results_files(general_path, config_name='temp_stats'):
