@@ -44,9 +44,10 @@ def check_minimum_presence_parameter(x, y):
 
 
 def main(path, datafile_name, col1, col2):
-    if os.path.exists('pre_processed_data/result_data'):
-        with open('pre_processed_data/result_data', 'rb') as f:
+    if os.path.exists('pre_processed_data/results_data'):
+        with open('pre_processed_data/results_data', 'rb') as f:
             current, models, x_train, x_test = pickle.load(f)
+            print('Loaded pre processed data...')
     else:
         x, y = get_data(path, datafile_name, col1, col2)
         x, y = check_minimum_presence_parameter(x, y)
@@ -68,14 +69,14 @@ def main(path, datafile_name, col1, col2):
         #
         # # Output basic descriptive stats
         # # Sending over X and Y as lists in a dictionary for current and each model
-        current = {'current': [pd.concat([x_train, x_test], axis=0).reset_index(),
+        current = {'current': [pd.concat([x_train, x_test], axis=0),
                                pd.concat([pd.DataFrame(y_train), pd.DataFrame(y_test)], axis=0, ignore_index=True)]}
         current.update(results)
 
         with open('pre_processed_data/results_data', 'wb') as f:
             pickle.dump([current, models, x_train, x_test], f)
     print('Sum of ones: {}'.format(current['current'][1].sum()))
-    descriptive_stats.print_conf_stats(current, path)
+    descriptive_stats.print_conf_stats(current)
     return models, x_train, x_test
 
 
