@@ -27,7 +27,7 @@ def compound(x, n):
         if p in samples.index:
             if param[p]['distribution'] == 'normal':
                 lower, upper = param[p]['min'], param[p]['max']
-                mu, sigma = samples.loc[p, 'mean'], samples.loc[p, 'std'] * 2
+                mu, sigma = samples.loc[p, 'mean'], samples.loc[p, 'std'] * 3
                 data[p] = stats.truncnorm((lower - mu) / sigma, (upper - mu) / sigma, loc=mu, scale=sigma).rvs(n)
         else:
             choices = [i for i in samples.index if p in i]

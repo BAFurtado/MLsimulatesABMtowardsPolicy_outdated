@@ -11,6 +11,8 @@ def print_conf_stats(kwargs, name):
         temp2 = kwargs[key][0].mean(axis=0)
         # Averaging by results 1, 0 for each model.
         temp3 = temp1.groupby([key]).agg('mean')
+        if len(temp3) != 2:
+            continue
         res = pd.concat([temp2, temp3.T], axis=1)
         res.columns = ['tot_' + key, key + '_0', key + '_1']
         df = pd.concat([df, res], axis=1)

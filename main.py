@@ -45,7 +45,7 @@ def check_minimum_presence_parameter(x, y):
 
 
 def main(path, datafile_name, col1, col2, param_size):
-    output_name = f'{col1[0]}_{col1[1]}_{col2[0]}_{col2[1]}_{datafile_name}'
+    output_name = f'{col1[0]}_{col1[1]}_{col2[0]}_{col2[1]}_{param_size}_{datafile_name}'
     if os.path.exists(f'pre_processed_data/results_data_{output_name}'):
         with open(f'pre_processed_data/results_data_{output_name}', 'rb') as f:
             current, models, x_train, x_test = pickle.load(f)
@@ -68,14 +68,13 @@ def main(path, datafile_name, col1, col2, param_size):
             print('Sum of ones {}: {}'.format(key, yr.sum()))
             yr = pd.DataFrame({key: yr.tolist()})
             results[key] = [r, yr]
-        #
         # # Output basic descriptive stats
         # # Sending over X and Y as lists in a dictionary for current and each model
         current = {'current': [pd.concat([x_train, x_test], axis=0),
                                pd.concat([pd.DataFrame(y_train), pd.DataFrame(y_test)], axis=0, ignore_index=True)]}
         current.update(results)
 
-        with open(f'pre_processed_data/results_data_{datafile_name}', 'wb') as f:
+        with open(f'pre_processed_data/results_data_{output_name}', 'wb') as f:
             pickle.dump([current, models, x_train, x_test], f)
     print(f"Sum of ones: {current['current'][1].sum()}")
     descriptive_stats.print_conf_stats(current, output_name)
@@ -86,7 +85,7 @@ if __name__ == "__main__":
     p = r'\\storage1\carga\MODELO DINAMICO DE SIMULACAO\Exits_python\PS2020'
     # f'temp_' + {stats', 'firms', 'banks', 'construction' and 'regional'} are always saved
     file = 'temp_stats'
-    sample_size = 200000
+    sample_size = 500000
     # Currently, all data refer to the duo 'gdp_index' and 'gini_index'
     target1 = 'gdp_index', 80, operator.gt
     target2 = 'gini_index', 20, operator.lt
