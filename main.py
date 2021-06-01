@@ -85,8 +85,8 @@ if __name__ == "__main__":
     p = r'\\storage1\carga\MODELO DINAMICO DE SIMULACAO\Exits_python\PS2020'
     # f'temp_' + {stats', 'firms', 'banks', 'construction' and 'regional'} are always saved
     file = 'temp_stats'
-    sample_size = 500000
+    sample_size = 1000000
     # Currently, all data refer to the duo 'gdp_index' and 'gini_index'
-    target1 = 'gdp_index', 80, operator.gt
-    target2 = 'gini_index', 20, operator.lt
+    target1 = 'gdp_index', 75, operator.gt
+    target2 = 'gini_index', 25, operator.lt
     ms, xl, xs = main(p, file, target1, target2, sample_size)
