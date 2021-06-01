@@ -15,7 +15,7 @@ def pre_process(data):
     return data.describe().T[['mean', 'std']]
 
 
-def compound(x, n):
+def compound(x, n, omitted_rule=False):
     # Function will break if n is too small < 1000
     # so that not enough columns will be sampled for PROCESSING_ACPS, for example
     param = to_dict_from_module()
@@ -37,6 +37,8 @@ def compound(x, n):
                 temp = pd.get_dummies(choices_vector)
                 temp.columns = choices
                 df = pd.concat([temp, df], axis=1)
+    if omitted_rule:
+        data['OMITTED_RULE'] = np.random.choice([1, 0], n, p=[.5, .5])
     return pd.concat([df, pd.DataFrame(data)], axis=1)
 
 

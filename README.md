@@ -18,9 +18,9 @@ numpy pandas
 2. WAGE_IGNORE_UNEMPLOYMENT
 3. ALTERNATIVE0 
 4. FPM_DISTRIBUTION 
-5. POLICIES
+5. POLICIES (most outstanding result)
 6. OFFER_SIZE_ON_PRICE
-7. ON_MARKET_DECAY_FACTOR
+7. ON_MARKET_DECAY_FACTOR ** (not enough data on runs)
 8. NEIGHBORHOOD_EFFECT
 
 ### Parameters
@@ -59,7 +59,7 @@ numpy pandas
 33. PRIVATE_TRANSIT_COST
 34. PUBLIC_TRANSIT_COST 
 35. PERCENTAGE_ACTUAL_POP  
-36. PROCESSING_ACPS
+36. PROCESSING_ACPS -- the metrpolitan regions ** results sufficient (enough runs) for 5 of them
 37. STARTING_DAY 
 
 The program:
@@ -78,7 +78,7 @@ Thus, some pre-processed data for some pairs of optimal cases are also made avai
 # Running the program
 `python main.py`
 
-Output will be produced at the output folder
+Output will be produced at the pre_processed folder
 You may change the parameters for the targets at main.py
 Or you may change the parameters of the ML in machines.py
 Or the size of the sample at generating_random_conf.py
