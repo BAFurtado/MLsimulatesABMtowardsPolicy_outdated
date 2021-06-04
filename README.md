@@ -88,6 +88,14 @@ Or the size of the sample at generating_random_conf.py
 36. PROCESSING_ACPS -- the metrpolitan regions ** results sufficient (enough runs) for 5 of them
 37. STARTING_DAY 
 
+#### Note.
+
+To include validation.
+1. X -> omitted_rule = 0
+2. X -> One more row in X for each city with observed values (Y) por higher GDP and smaller inequality
+3. Train
+4. Observe output in predicted for omitted_rule
+
 
 ### To remember
     Windows 64-bit packages of scikit-learn can be accelerated using scikit-learn-intelex.
