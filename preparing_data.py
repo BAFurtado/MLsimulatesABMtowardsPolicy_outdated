@@ -13,7 +13,8 @@ def read_conf_results_files(general_path, config_name='temp_stats'):
     # Walks over directory collecting all files representing each simulation results
     return [os.path.join(dirpath, f)
             for dirpath, dirnames, files in os.walk(general_path)
-            for f in files if f.startswith(config_name)]
+            for f in files if f.startswith(config_name)
+            if os.path.exists(os.path.join(os.path.dirname(dirpath), 'conf.json'))]
 
 
 def associate_config_file(files):

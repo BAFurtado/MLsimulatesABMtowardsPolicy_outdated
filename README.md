@@ -35,8 +35,11 @@ Thus, some pre-processed data for some pairs of optimal cases are also made avai
 `python main.py`
 
 Output will be produced at the pre_processed folder
+
 You may change the parameters for the targets at main.py
+
 Or you may change the parameters of the ML in machines.py
+
 Or the size of the sample at generating_random_conf.py
 
 ### Rules (configured by parameters)
@@ -85,7 +88,7 @@ Or the size of the sample at generating_random_conf.py
 33. PRIVATE_TRANSIT_COST
 34. PUBLIC_TRANSIT_COST 
 35. PERCENTAGE_ACTUAL_POP  
-36. PROCESSING_ACPS -- the metrpolitan regions ** results sufficient (enough runs) for 5 of them
+36. PROCESSING_ACPS -- the metropolitan regions ** results sufficient (enough runs) for 5 of them
 37. STARTING_DAY 
 
 #### Note.
