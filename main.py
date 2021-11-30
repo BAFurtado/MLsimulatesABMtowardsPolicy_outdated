@@ -52,38 +52,32 @@ def add_zero_rule(x, name):
 
 def main(path, datafile_name, col1, col2, param_size, omitted_rule=False):
     output_name = f'{col1[0]}_{col1[1]}_{col2[0]}_{col2[1]}_{param_size}_{datafile_name}'
-    if os.path.exists(f'pre_processed_data/results_data_{output_name}') and not omitted_rule:
-        with open(f'pre_processed_data/results_data_{output_name}', 'rb') as f:
-            current, models, x_train, x_test = pickle.load(f)
-            print('Loaded pre processed data...')
-    else:
-        x, y = get_data(path, datafile_name, col1, col2)
-        x, y = check_minimum_presence_parameter(x, y)
-        if omitted_rule:
-            x, output_name = add_zero_rule(x, output_name)
-        x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=TEST_SIZE, random_state=10)
-        # Running model
-        models = machines.run_classifiers(x_train, x_test, y_train, y_test)
 
-        # # Generating random configuration data to test against optimal results
-        r = generating_random_conf.compound(x_train, param_size, omitted_rule)
-        print('Generated expanded configuration dataset')
-        #
-        # # Predicting results using machine on generated set of random parameters
-        results = dict()
-        for key in models.keys():
-            yr = machines.predict(models[key], r[x.columns.tolist()])
-            print('Sum of ones {}: {}'.format(key, yr.sum()))
-            yr = pd.DataFrame({key: yr.tolist()})
-            results[key] = [r, yr]
-        # # Output basic descriptive stats
-        # # Sending over X and Y as lists in a dictionary for current and each model
-        current = {'current': [pd.concat([x_train, x_test], axis=0),
-                               pd.concat([pd.DataFrame(y_train), pd.DataFrame(y_test)], axis=0, ignore_index=True)]}
-        current.update(results)
+    x, y = get_data(path, datafile_name, col1, col2)
+    x, y = check_minimum_presence_parameter(x, y)
+    if omitted_rule:
+        x, output_name = add_zero_rule(x, output_name)
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=TEST_SIZE, random_state=10)
+    # Running model
+    models = machines.run_classifiers(x_train, x_test, y_train, y_test)
 
-        with open(f'pre_processed_data/results_data_{output_name}', 'wb') as f:
-            pickle.dump([current, models, x_train, x_test], f)
+    # # Generating random configuration data to test against optimal results
+    r = generating_random_conf.compound(x_train, param_size, omitted_rule)
+    print('Generated expanded configuration dataset')
+    #
+    # # Predicting results using machine on generated set of random parameters
+    results = dict()
+    for key in models.keys():
+        yr = machines.predict(models[key], r[x.columns.tolist()])
+        print('Sum of ones {}: {}'.format(key, yr.sum()))
+        yr = pd.DataFrame({key: yr.tolist()})
+        results[key] = [r, yr]
+    # # Output basic descriptive stats
+    # # Sending over X and Y as lists in a dictionary for current and each model
+    current = {'current': [pd.concat([x_train, x_test], axis=0),
+                           pd.concat([pd.DataFrame(y_train), pd.DataFrame(y_test)], axis=0, ignore_index=True)]}
+    current.update(results)
+
     print(f"Sum of ones: {current['current'][1].sum()}")
     descriptive_stats.print_conf_stats(current, output_name)
     return models, x_train, x_test
