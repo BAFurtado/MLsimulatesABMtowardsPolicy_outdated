@@ -23,6 +23,7 @@ def normalize_trial(x, xt):
 def run_classifiers(x, x_test, y, y_test):
 
     # models = ['Tree', 'MPL', 'SVC', 'Voting']
+    ### If one wants to use more than one, select from above, do not forget to update below
     models = ['Tree']
 
     m1 = RandomForestClassifier(n_estimators=10000, criterion='gini', bootstrap=True, max_depth=15)
@@ -32,6 +33,7 @@ def run_classifiers(x, x_test, y, y_test):
 
     # Fitting models
     # cls = [m1, m3, m4, voting]
+    #if changes are perfomed above change HERE too
     cls = [m1]
     for each in cls:
         each.fit(x, y)
