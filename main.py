@@ -89,6 +89,7 @@ if __name__ == "__main__":
     file = 'temp_stats'
     o_rule = False
     sample_size = 1000000
+    #change to less sample_size if runnin tests
     # Currently, all data refer to the duo 'gdp_index' and 'gini_index'
     target1 = 'gdp_index', 75, operator.gt
     target2 = 'gini_index', 25, operator.lt
