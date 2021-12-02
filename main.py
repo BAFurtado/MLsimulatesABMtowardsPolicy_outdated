@@ -79,6 +79,7 @@ def main(path, datafile_name, col1, col2, param_size, omitted_rule=False):
     current.update(results)
 
     print(f"Sum of ones: {current['current'][1].sum()}")
+    # TODO. Save current to work with it. Pickle.
     descriptive_stats.print_conf_stats(current, output_name)
     return models, x_train, x_test
 
@@ -88,7 +89,7 @@ if __name__ == "__main__":
     # f'temp_' + {stats', 'firms', 'banks', 'construction' and 'regional'} are always saved
     file = 'temp_stats'
     o_rule = False
-    sample_size = 1000000
+    sample_size = 100000
     # Currently, all data refer to the duo 'gdp_index' and 'gini_index'
     target1 = 'gdp_index', 75, operator.gt
     target2 = 'gini_index', 25, operator.lt
