@@ -8,8 +8,8 @@ def print_conf_stats(kwargs, name):
     for key in kwargs.keys():
         temp1 = pd.concat([kwargs[key][0], kwargs[key][1]], axis=1)
         temp1.rename(columns={temp1.columns[-1]: key}, inplace=True)
+        temp1.to_csv(f'output/{key}_{name}', sep=';', index=False)
         temp2 = kwargs[key][0].mean(axis=0)
-        # TODO: SAVE TEMP2 FOR CSV. PREPARO O NOME
         # Averaging by results 1, 0 for each model.
         temp3 = temp1.groupby([key]).agg('mean')
         if len(temp3) != 2:

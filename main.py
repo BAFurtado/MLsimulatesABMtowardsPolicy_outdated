@@ -78,8 +78,9 @@ def main(path, datafile_name, col1, col2, param_size, omitted_rule=False):
                            pd.concat([pd.DataFrame(y_train), pd.DataFrame(y_test)], axis=0, ignore_index=True)]}
     current.update(results)
 
-    print(f"Sum of ones: {current['current'][1].sum()}")
-    # TODO. Save current to work with it. Pickle.
+    with open(f'output/results_data_{output_name}', 'wb') as f:
+        pickle.dump(current, f)
+
     descriptive_stats.print_conf_stats(current, output_name)
     return models, x_train, x_test
 
