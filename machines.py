@@ -46,8 +46,10 @@ def run_classifiers(x, x_test, y, y_test):
         # Examining confusion matrix
         yhat = models[key].predict(x_test)
         cm = confusion_matrix(y_test, yhat)
-        print('Confusion Matrix {}:\n {}.'.format(key, cm))
-
+        with open(f'output/confusion_matrix_{key}.txt', 'w') as handler:
+            msg = 'Confusion Matrix {}:\n {}.'.format(key, cm)
+            handler.write(msg)
+            print('Confusion Matrix {}:\n {}.'.format(key, cm))
     # Returns a dictionary of models' names and the model itself
     return models
 
