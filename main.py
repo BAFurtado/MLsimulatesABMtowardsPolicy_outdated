@@ -18,12 +18,12 @@ set_printoptions(precision=6)
 TEST_SIZE = .25
 
 
-def get_data(path, datafile_name, col1, col2):
+def get_data(path, datafile_name, col1, col2, output_name):
     try:
-        x, y = preparing_data.read_xy(datafile_name)
+        x, y = preparing_data.read_xy(datafile_name, output_name)
         print('Loaded!')
     except FileNotFoundError:
-        x, y = preparing_data.main(path, datafile_name)
+        x, y = preparing_data.main(path, datafile_name, output_name)
     target = choosing_targets.getting_target(y, col1, col2)
     target = np.ravel(target)
     return x, target
@@ -52,37 +52,41 @@ def add_zero_rule(x, name):
 
 def main(path, datafile_name, col1, col2, param_size, omitted_rule=False):
     output_name = f'{col1[0]}_{col1[1]}_{col2[0]}_{col2[1]}_{param_size}_{datafile_name}'
+    if os.path.exists(f'output/results_data_{output_name}'):
+        with open(f'output/results_data_{output_name}', 'wb') as f:
+            current = pickle.load(f)
+    else:
+        x, y = get_data(path, datafile_name, col1, col2, output_name)
+        x, y = check_minimum_presence_parameter(x, y)
+        if omitted_rule:
+            x, output_name = add_zero_rule(x, output_name)
+        x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=TEST_SIZE, random_state=10)
+        # Running model
+        models = machines.run_classifiers(x_train, x_test, y_train, y_test)
 
-    x, y = get_data(path, datafile_name, col1, col2)
-    x, y = check_minimum_presence_parameter(x, y)
-    if omitted_rule:
-        x, output_name = add_zero_rule(x, output_name)
-    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=TEST_SIZE, random_state=10)
-    # Running model
-    models = machines.run_classifiers(x_train, x_test, y_train, y_test)
+        # # Generating random configuration data to test against optimal results
+        r = generating_random_conf.compound(x_train, param_size, omitted_rule)
+        print('Generated expanded configuration dataset')
+        #
+        # # Predicting results using machine on generated set of random parameters
+        results = dict()
+        for key in models.keys():
+            yr = machines.predict(models[key], r[x.columns.tolist()])
+            print('Sum of ones {}: {}'.format(key, yr.sum()))
+            yr = pd.DataFrame({key: yr.tolist()})
+            results[key] = [r, yr]
+        # # Output basic descriptive stats
+        # # Sending over X and Y as lists in a dictionary for current and each model
+        current = {'current': [pd.concat([x_train, x_test], axis=0),
+                               pd.concat([pd.DataFrame(y_train), pd.DataFrame(y_test)], axis=0, ignore_index=True)]}
+        current.update(results)
 
-    # # Generating random configuration data to test against optimal results
-    r = generating_random_conf.compound(x_train, param_size, omitted_rule)
-    print('Generated expanded configuration dataset')
-    #
-    # # Predicting results using machine on generated set of random parameters
-    results = dict()
-    for key in models.keys():
-        yr = machines.predict(models[key], r[x.columns.tolist()])
-        print('Sum of ones {}: {}'.format(key, yr.sum()))
-        yr = pd.DataFrame({key: yr.tolist()})
-        results[key] = [r, yr]
-    # # Output basic descriptive stats
-    # # Sending over X and Y as lists in a dictionary for current and each model
-    current = {'current': [pd.concat([x_train, x_test], axis=0),
-                           pd.concat([pd.DataFrame(y_train), pd.DataFrame(y_test)], axis=0, ignore_index=True)]}
-    current.update(results)
+        with open(f'output/results_data_{output_name}', 'wb') as f:
+            pickle.dump(current, f)
 
-    with open(f'output/results_data_{output_name}', 'wb') as f:
-        pickle.dump(current, f)
-
+        return models, x_train, x_test
     descriptive_stats.print_conf_stats(current, output_name)
-    return models, x_train, x_test
+    return current
 
 
 if __name__ == "__main__":
@@ -90,7 +94,7 @@ if __name__ == "__main__":
     # f'temp_' + {stats', 'firms', 'banks', 'construction' and 'regional'} are always saved
     file = 'temp_stats'
     o_rule = False
-    sample_size = 100000
+    sample_size = 1000000
     # Currently, all data refer to the duo 'gdp_index' and 'gini_index'
     target1 = 'gdp_index', 75, operator.gt
     target2 = 'gini_index', 25, operator.lt
