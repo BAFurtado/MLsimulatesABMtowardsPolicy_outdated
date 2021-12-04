@@ -53,7 +53,7 @@ def add_zero_rule(x, name):
 def main(path, datafile_name, col1, col2, param_size, omitted_rule=False):
     output_name = f'{col1[0]}_{col1[1]}_{col2[0]}_{col2[1]}_{param_size}_{datafile_name}'
     if os.path.exists(f'output/results_data_{output_name}'):
-        with open(f'output/results_data_{output_name}', 'wb') as f:
+        with open(f'output/results_data_{output_name}', 'rb') as f:
             current = pickle.load(f)
     else:
         x, y = get_data(path, datafile_name, col1, col2, output_name)
@@ -83,10 +83,7 @@ def main(path, datafile_name, col1, col2, param_size, omitted_rule=False):
 
         with open(f'output/results_data_{output_name}', 'wb') as f:
             pickle.dump(current, f)
-
-        return models, x_train, x_test
     descriptive_stats.print_conf_stats(current, output_name)
-    return current
 
 
 if __name__ == "__main__":
@@ -98,4 +95,4 @@ if __name__ == "__main__":
     # Currently, all data refer to the duo 'gdp_index' and 'gini_index'
     target1 = 'gdp_index', 75, operator.gt
     target2 = 'gini_index', 25, operator.lt
-    ms, xl, xs = main(p, file, target1, target2, sample_size, o_rule)
+    main(p, file, target1, target2, sample_size, o_rule)
