@@ -11,7 +11,7 @@ def print_conf_stats(kwargs, name):
         kwargs[key][1].to_csv(f'output/{key}_{name}_1.csv', sep=';', index=False)
         try:
             temp1 = pd.DataFrame(index=np.arange(0, len(kwargs[key][0])),
-                                 columns=[kwargs[key][0].columns + [f'{key}_optimal']])
+                                 columns=[list(kwargs[key][0].columns) + [f'{key}_optimal']])
             n_cols = kwargs[key][0].shape[1]
             temp1.iloc[:, 0: n_cols] = kwargs[key][0]
             temp1.iloc[:, n_cols: n_cols + 1] = kwargs[key][1]
