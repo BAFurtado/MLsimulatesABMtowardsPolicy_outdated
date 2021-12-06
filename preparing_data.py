@@ -94,12 +94,12 @@ def save_xy(x, y, name):
     y.to_csv(f'pre_processed_data/y_{name}.csv', sep=';', index=False)
 
 
-def read_xy(name):
-    return pd.read_csv(f'pre_processed_data/x_{name}.csv', sep=';'), \
-           pd.read_csv(f'pre_processed_data/y_{name}.csv', sep=';')
+def read_xy(name, output_name):
+    return pd.read_csv(f'pre_processed_data/x_{name}_{output_name}.csv', sep=';'), \
+           pd.read_csv(f'pre_processed_data/y_{name}_{output_name}.csv', sep=';')
 
 
-def reading_saving_data(path, datafile_name):
+def reading_saving_data(path, datafile_name, output_name):
     # Get list of files
     print('Reading configuration files...')
     list_of_files = read_conf_results_files(path, datafile_name)
@@ -113,12 +113,12 @@ def reading_saving_data(path, datafile_name):
     x = drop_columns(x)
     x = dummies(x)
     print('Saving tables...')
-    save_xy(x, y, datafile_name)
+    save_xy(x, y, output_name)
     return x, y
 
 
-def main(path, datafile_name='temp_stats'):
-    x, y = reading_saving_data(path, datafile_name=datafile_name)
+def main(path, datafile_name='temp_stats', output_name=''):
+    x, y = reading_saving_data(path, datafile_name=datafile_name, output_name=output_name)
     return x, y
 
 
