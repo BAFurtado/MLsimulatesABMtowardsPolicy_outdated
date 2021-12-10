@@ -91,7 +91,7 @@ if __name__ == "__main__":
     # f'temp_' + {stats', 'firms', 'banks', 'construction' and 'regional'} are always saved
     file = 'temp_stats'
     o_rule = False
-    sample_size = 1000000
+    sample_size = 10000
     # Currently, all data refer to the duo 'gdp_index' and 'gini_index'
     target1 = 'gdp_index', 75, operator.gt
     target2 = 'gini_index', 25, operator.lt
