@@ -1,7 +1,6 @@
 import os
 import pandas as pd
 import numpy as np
-from plot_iqrs import plot_iqrs
 
 # 1. Read tables
 # 2. Identify process of comparison (criteria to make a decision)
@@ -72,7 +71,7 @@ if __name__ == '__main__':
         else:
             plot_df = csv.loc[csv[ACP] == 1]
 
-        plot_iqrs(plot_df, str(ACP), ['POLICIES_buy', 'POLICIES_rent', 'POLICIES_wage', 'POLICIES_no_policy'])
+        # plot_iqrs(plot_df, str(ACP), ['POLICIES_buy', 'POLICIES_rent', 'POLICIES_wage', 'POLICIES_no_policy'])
 
         for pol in ['any', 'POLICIES_buy', 'POLICIES_no_policy', 'POLICIES_rent', 'POLICIES_wage']:
 
@@ -98,3 +97,11 @@ if __name__ == '__main__':
 
     # with that we have a csv (on this folder) with the combined information per ACP.
     # TODO p-value (yet to find a less cumbersome method)
+
+    # GOA 11/12/12: attempting to get a cities per policy image
+
+    for pol in ['POLICIES_buy', 'POLICIES_no_policy', 'POLICIES_rent', 'POLICIES_wage']:
+        print('tbd')
+        # plot_iqrs(csv.loc[csv[pol] == 1], pol, ['PROCESSING_ACPS_ARACAJU', 'PROCESSING_ACPS_BELEM']) This first attempt won't work: for everything but that ACP is zero, so the sizes will be all messed up. Need to cut between figures and then add manually (try to do within python)
+
+
