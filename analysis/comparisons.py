@@ -7,7 +7,7 @@ import plot_iqrs
 def plotting(data):
     for each in data:
         for key in groups_cols.abm_dummies:
-            plot_iqrs.plot_iqrs(data[each], key, groups_cols.abm_dummies[key])
+            plot_iqrs.plot_iqrs(data[each], f'{each}_{key}', groups_cols.abm_dummies[key])
 
 
 if __name__ == '__main__':

@@ -12,15 +12,16 @@ def plot_iqrs(data1, title, cols):
     :param cols: Columns to plot
     :return: None
     """
-    rows, cs = (len(cols) % 4) + 1, 4
+    rows, cs = (len(cols) // 4) + 1, 4
     fig, axes = plt.subplots(nrows=rows, ncols=cs, squeeze=False)
     for i in range(rows):
         for j in range(cs):
-            if len(cols) <= i * 4 + j:
+            if len(cols) > i * 4 + j:
                 sea.violinplot(x=cols[i * 4 + j], y='Tree', data=data1, ax=axes[i, j])
     fig.suptitle(title)
     plt.show()
     fig.savefig(f'../text/figures/{title}.png', )
+    plt.close()
 
 
 if __name__ == '__main__':
