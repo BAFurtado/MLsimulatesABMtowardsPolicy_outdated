@@ -30,7 +30,6 @@ abm_dummies = {'policies': ['POLICIES_buy', 'POLICIES_rent', 'POLICIES_wage', 'P
                         'PROCESSING_ACPS_TERESINA',
                         'PROCESSING_ACPS_MANAUS',
                         'PROCESSING_ACPS_BRASILIA'],
-               'r_wage': ['WAGE_IGNORE_UNEMPLOYMENT_False', 'WAGE_IGNORE_UNEMPLOYMENT_True'],
                'r_licenses': ['T_LICENSES_PER_REGION_False',
                               'T_LICENSES_PER_REGION_True',
                               'T_LICENSES_PER_REGION_random'],
