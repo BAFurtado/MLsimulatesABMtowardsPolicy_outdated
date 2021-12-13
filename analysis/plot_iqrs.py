@@ -17,16 +17,18 @@ def plot_iqrs(data1, title, cols):
         sea.violinplot(x=col, y='Tree', data=data1, ax=axes[i])
     fig.suptitle(title)
     plt.show()
+    fig.savefig(f'../text/figures/{title}.png', )
 
 
 if __name__ == '__main__':
     # Let's keep the files inside the pre_processed_data
     # So, it works if you run this file in Console. Or from within the 'analysis' folder!
-    t = pd.read_csv('../pre_processed_data/Tree_gdp_index_75_gini_index_25_1000000_temp_stats.csv', sep=';')
+    # t = pd.read_csv('../pre_processed_data/Tree_gdp_index_75_gini_index_25_1000000_temp_stats.csv', sep=';')
     # print(t.shape)
-    th = t.head(10000)
-    th.to_csv('../pre_processed_data/Tree_gdp_index_75_gini_index_25_1000000_temp_stats_10000.csv',
-              sep=';', index=False)
+    # th = t.head(10000)
+    # th.to_csv('../pre_processed_data/Tree_gdp_index_75_gini_index_25_1000000_temp_stats_10000.csv',
+    #             sep=';', index=False)
+    th = pd.read_csv('../pre_processed_data/Tree_gdp_index_75_gini_index_25_1000000_temp_stats_10000.csv', sep=';')
     c = pd.read_csv('../pre_processed_data/current_gdp_index_75_gini_index_25_1000000_temp_stats.csv', sep=';')
     c.rename(columns={'0': 'Tree'}, inplace=True)
     plot_iqrs(th, 'title', ['POLICIES_buy', 'POLICIES_rent', 'POLICIES_wage', 'POLICIES_no_policy'])
