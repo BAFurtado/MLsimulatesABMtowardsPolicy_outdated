@@ -20,6 +20,7 @@ def plot_iqrs(data1, title, cols, save = True):
             if len(cols) > i * 4 + j:
                 sea.violinplot(x=cols[i * 4 + j], y='Tree', data=data1, ax=axes[i, j])
     fig.set_size_inches(11.69, 8.27) if rows>1 else None
+    fig.tight_layout()
     fig.suptitle(title)
 
     """
