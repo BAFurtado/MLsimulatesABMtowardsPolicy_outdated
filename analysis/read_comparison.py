@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 import numpy as np
+import groups_cols
 
 # 1. Read tables
 # 2. Identify process of comparison (criteria to make a decision)
@@ -48,32 +49,16 @@ if __name__ == '__main__':
 
     df = pd.DataFrame()
 
-    for ACP in ['all', 'PROCESSING_ACPS_ARACAJU', 'PROCESSING_ACPS_BELEM', 'PROCESSING_ACPS_BELO HORIZONTE',
-                'PROCESSING_ACPS_BRASILIA', 'PROCESSING_ACPS_CAMPINA GRANDE', 'PROCESSING_ACPS_CAMPINAS',
-                'PROCESSING_ACPS_CAMPO GRANDE', 'PROCESSING_ACPS_CAMPOS DOS GOYTACAZES',
-                'PROCESSING_ACPS_CAXIAS DO SUL', 'PROCESSING_ACPS_CRAJUBAR', 'PROCESSING_ACPS_CUIABA',
-                'PROCESSING_ACPS_CURITIBA', 'PROCESSING_ACPS_FEIRA DE SANTANA', 'PROCESSING_ACPS_FLORIANOPOLIS',
-                'PROCESSING_ACPS_FORTALEZA', 'PROCESSING_ACPS_GOIANIA', 'PROCESSING_ACPS_ILHEUS - ITABUNA',
-                'PROCESSING_ACPS_IPATINGA', 'PROCESSING_ACPS_JOAO PESSOA', 'PROCESSING_ACPS_JOINVILLE',
-                'PROCESSING_ACPS_JUIZ DE FORA', 'PROCESSING_ACPS_JUNDIAI', 'PROCESSING_ACPS_LONDRINA',
-                'PROCESSING_ACPS_MACAPA', 'PROCESSING_ACPS_MACEIO', 'PROCESSING_ACPS_MANAUS',
-                'PROCESSING_ACPS_MARINGA', 'PROCESSING_ACPS_NATAL', 'PROCESSING_ACPS_NOVO HAMBURGO - SAO LEOPOLDO',
-                'PROCESSING_ACPS_PELOTAS - RIO GRANDE', 'PROCESSING_ACPS_PETROLINA - JUAZEIRO',
-                'PROCESSING_ACPS_PORTO ALEGRE', 'PROCESSING_ACPS_RECIFE', 'PROCESSING_ACPS_RIBEIRAO PRETO',
-                'PROCESSING_ACPS_RIO DE JANEIRO', 'PROCESSING_ACPS_SALVADOR', 'PROCESSING_ACPS_SANTOS',
-                'PROCESSING_ACPS_SAO JOSE DO RIO PRETO', 'PROCESSING_ACPS_SAO JOSE DOS CAMPOS',
-                'PROCESSING_ACPS_SAO LUIS', 'PROCESSING_ACPS_SAO PAULO', 'PROCESSING_ACPS_SOROCABA',
-                'PROCESSING_ACPS_TERESINA', 'PROCESSING_ACPS_UBERLANDIA', 'PROCESSING_ACPS_VITORIA',
-                'PROCESSING_ACPS_VOLTA REDONDA - BARRA MANSA']:
+    acps = ['all'] + groups_cols.abm_dummies['acps']
+
+    for ACP in acps:
 
         if ACP == 'all':
             plot_df = csv
         else:
             plot_df = csv.loc[csv[ACP] == 1]
 
-        # plot_iqrs(plot_df, str(ACP), ['POLICIES_buy', 'POLICIES_rent', 'POLICIES_wage', 'POLICIES_no_policy'])
-
-        for pol in ['any', 'POLICIES_buy', 'POLICIES_no_policy', 'POLICIES_rent', 'POLICIES_wage']:
+        for pol in groups_cols.abm_dummies['policies']:
 
             if ACP == 'all' and pol == 'any':
                 rslt_df = csv.loc[csv['POLICIES_no_policy'] == 0]
@@ -90,18 +75,17 @@ if __name__ == '__main__':
                 'Tree'].count(), np.std(rslt_df['Tree'])
 
             df = df.append(
-                {'ACP': ACP, 'pol': pol, 'q3': q3, 'q1': q1, 'median': median, 'IQR': q3 - q1, 'mean': mean, 'std': std,
+                {'ACP': ACP,
+                 'pol': pol,
+                 'q3': q3,
+                 'q1': q1,
+                 'median': median,
+                 'IQR': q3 - q1,
+                 'mean': mean,
+                 'std': std,
                  'count': count}, ignore_index=True)
 
     df.to_csv('IQR.csv', sep=';')
 
     # with that we have a csv (on this folder) with the combined information per ACP.
     # TODO p-value (yet to find a less cumbersome method)
-
-    # GOA 11/12/12: attempting to get a cities per policy image
-
-    for pol in ['POLICIES_buy', 'POLICIES_no_policy', 'POLICIES_rent', 'POLICIES_wage']:
-        print('tbd')
-        # plot_iqrs(csv.loc[csv[pol] == 1], pol, ['PROCESSING_ACPS_ARACAJU', 'PROCESSING_ACPS_BELEM']) This first attempt won't work: for everything but that ACP is zero, so the sizes will be all messed up. Need to cut between figures and then add manually (try to do within python)
-
-
