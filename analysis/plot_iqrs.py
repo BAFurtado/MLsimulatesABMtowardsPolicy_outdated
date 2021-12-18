@@ -5,15 +5,17 @@ import groups_cols
 import itertools
 
 
-def plot_iqrs(data1, title, cols, save=True, format='png', y='Tree'):
+def plot_iqrs(data1, title, cols, save=True, output='png', y='Tree', show=True):
     """ Produces a violin plot with seaborn. data1 is a pandas dataframe and cols is a list
     with the names of each column within both data that one wishes to produce the figure about.
     Title is a string with the name to be used
     :param data1: pandas DataFrame
     :param title: name of the plot
     :param cols: Columns to plot
-    :param format: default == png, can be changed to pdf or any other type
-    :param save: default == True, if False, then the picture is not saved, only shown
+    :param output: default == png, can be changed to pdf or any other type
+    :param save: default == True, if False, then the picture is not saved
+    :param y: default == Tree, is the default value to be analysed by the histogram
+    :param show: default == True, if False, then the picture is not shown
     :return: None
     """
     rows, cs = max(1, (len(cols) // 4)), 4
@@ -30,8 +32,8 @@ def plot_iqrs(data1, title, cols, save=True, format='png', y='Tree'):
     HOW TO INTERPRET IT: each box represents a policy, with 'one' being every case that had that particular policy used, and 'zero' with every other case. Within a violin, zero represents non-optimal and one represents optimal. Best case is specific policy has a larger plot at one and the options have a larget plot at zero: most of the cases of that policy are optimal and most of the cases that did not use that policy were not optimal
     """
 
-    plt.show()
-    fig.savefig(f'../text/figures/{title}.{format}', bbox_inches='tight') if save == True else None
+    plt.show() if show is True else None
+    fig.savefig(f'../text/figures/{title}.{output}', bbox_inches='tight') if save is True else None
     plt.close()
 
 
@@ -51,7 +53,7 @@ if __name__ == '__main__':
             plot_df = csv.loc[csv[ACP] == 1]
 
         plot_iqrs(plot_df, str(ACP),
-                  groups_cols.abm_dummies['policies'], save=False)
+                  groups_cols.abm_dummies['policies'])
 
         # for some bizarre reason, if the last policy is 'POLICIES_no_policy', the '1's are ignored. Do not know why
 
@@ -59,14 +61,13 @@ if __name__ == '__main__':
 
     for pol in groups_cols.abm_dummies['policies']:
         plot_iqrs(csv.loc[csv[pol] == 1], pol,
-                  groups_cols.abm_dummies['acps'], save=False)
+                  groups_cols.abm_dummies['acps'])
 
     # It is now working for policies per ACP, but is too squeezed
 
     dummies = list(itertools.chain.from_iterable(groups_cols.abm_dummies.values()))
     dummies = [elem for elem in dummies if elem not in groups_cols.abm_dummies["policies"]]
     dummies = [elem for elem in dummies if elem not in groups_cols.abm_dummies["acps"]]
-    dummies = [elem for elem in dummies if elem != ('ALTERNATIVE0_False' or 'ALTERNATIVE0_True')]
 
     for dummy in dummies:
         for ACP in acps:
@@ -83,13 +84,3 @@ if __name__ == '__main__':
             plot_iqrs(csv.loc[(csv[dummy] == 1) & (csv[pol] == 1)],
                       str([pol] + [dummy]),
                       groups_cols.abm_dummies['acps'])
-
-    params = groups_cols.abm_params
-    for param in params:
-        for ACP in groups_cols.abm_dummies['acps']:
-            plot_df = csv.loc[(csv[ACP] == 1)]
-
-            plot_iqrs(plot_df,
-                      str([ACP] + [param]),
-                      groups_cols.abm_dummies['policies'],
-                      y=param)

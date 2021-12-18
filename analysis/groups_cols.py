@@ -64,5 +64,3 @@ abm_params = ['CONSTRUCTION_ACC_CASH_FLOW',
               'TAX_ESTATE_TRANSACTION',
               'TAX_PROPERTY',
               'TOTAL_DAYS']
-
-
