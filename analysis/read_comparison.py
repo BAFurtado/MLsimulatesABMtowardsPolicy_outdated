@@ -43,9 +43,11 @@ if __name__ == '__main__':
     # important note: each ../ serves for one step of going up
     # why were the previous two tables tiny in relation to this one?
 
-    # all columns are pretty much already explained, but the Tree column means optimal: 0 is non-optimal and 1 is optimal
+    # all columns are pretty much already explained, but the Tree column means optimal:
+    # 0 is non-optimal and 1 is optimal
 
-    # script: we have to separate and aggregate, per characteristic and specially by ACP --> for each one we have to get median, q3, q1
+    # script: we have to separate and aggregate, per characteristic and specially by ACP -->
+    #   for each one we have to get median, q3, q1
 
     df = pd.DataFrame()
 
