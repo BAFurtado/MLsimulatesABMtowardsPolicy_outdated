@@ -38,11 +38,12 @@ abm_dummies = {'policies': ['POLICIES_buy', 'POLICIES_rent', 'POLICIES_wage', 'P
                'r_metro_fund': ['ALTERNATIVE0_False', 'ALTERNATIVE0_True']
                }
 
-abm_params = ['CONSTRUCTION_ACC_CASH_FLOW',
-              'HIRING_SAMPLE_SIZE',
+# 'CONSTRUCTION_ACC_CASH_FLOW',
+# 'LOT_COST',
+# 'TAX_PROPERTY',
+abm_params = ['HIRING_SAMPLE_SIZE',
               'LABOR_MARKET',
               'LOAN_PAYMENT_TO_PERMANENT_INCOME',
-              'LOT_COST',
               'MARKUP',
               'MAX_LOAN_TO_VALUE',
               'MUNICIPAL_EFFICIENCY_MANAGEMENT',
@@ -62,5 +63,4 @@ abm_params = ['CONSTRUCTION_ACC_CASH_FLOW',
               'SIZE_MARKET',
               'STICKY_PRICES',
               'TAX_ESTATE_TRANSACTION',
-              'TAX_PROPERTY',
               'TOTAL_DAYS']
