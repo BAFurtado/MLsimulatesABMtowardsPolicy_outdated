@@ -6,6 +6,19 @@ from groups_cols import abm_params as params
 
 # Replicating excel results for dummies
 def getting_counting(data, name):
+    """ Produces a csv with information regarding each dummy, i.e., when the dummy is active (=1).
+    In the final csv we have three columns: sample size, optimal and non-optimal.
+    All columns are in percentage of the total: sample size in relation to the whole sample, and optimal and
+    non-optimal in relation to the sample of that specific dummy.
+
+    For example, policies_buy has a sample size of 0.12 meaning that 12% of the sample had that dummy as true, an
+    optimal of 2% and a non-optimal of 97%, meaning that, when that dummy is active and policy used is buy, 97% of the
+    samples fall under the non-optimal category.
+
+    :param data: base csv
+    :param name: name of the file
+    :return: returns nothing, but saves the csv
+    """
     table = pd.DataFrame(columns=['size', 'optimal', 'non-optimal'])
     for key in dummies:
         for each in dummies[key]:
@@ -23,7 +36,15 @@ def getting_counting(data, name):
 
 # Parameters analysis
 def coefficient_variation_comparison(simulated, ml):
-    table = pd.DataFrame(columns=['simulated_optimal', 'ml_optimal'])
+    """ This function compares the ABM simulated results to the ML surrogate results in order to identify the
+    differences between the two methods. GOA 9/1: added the column difference, in order to streamline what would
+    otherwise be operations done in excel
+
+    :param simulated: the simulated database in csv
+    :param ml: the ML surrogate database in csv
+    :return: returns nothing, but saves the csv
+    """
+    table = pd.DataFrame(columns=['simulated_optimal', 'ml_optimal','difference'])
     for param in params:
         sim_mean = simulated[param].mean()
         sim_optimal_mean = simulated[simulated['Tree'] == 1][param].mean()
@@ -33,6 +54,7 @@ def coefficient_variation_comparison(simulated, ml):
         print(f'{param}: {(ml_optimal_mean - ml_mean) / ml_mean:.06f}')
         table.loc[param, 'simulated_optimal'] = (sim_optimal_mean - sim_mean) / sim_mean
         table.loc[param, 'ml_optimal'] = (ml_optimal_mean - ml_mean) / ml_mean
+        table.loc[param, 'difference'] = table.loc[param, 'simulated_optimal'] - table.loc[param, 'ml_optimal']
     table.to_csv(f'../pre_processed_data/parameters_comparison.csv', sep=';')
 
 
