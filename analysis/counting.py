@@ -37,7 +37,8 @@ def getting_counting(data, name):
 # Parameters analysis
 def coefficient_variation_comparison(simulated, ml):
     """ This function compares the ABM simulated results to the ML surrogate results in order to identify the
-    differences between the two methods. GOA 9/1: added the column difference, in order to streamline what would
+    differences between the two methods. How much of the cases fall under the optimal or non-optimal categories?
+    GOA 9/1: added the column difference, in order to streamline what would
     otherwise be operations done in excel
 
     :param simulated: the simulated database in csv

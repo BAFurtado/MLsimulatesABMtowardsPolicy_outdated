@@ -9,6 +9,10 @@ def plot_iqrs(data1, title, cols, save=True, output='png', y='Tree', show=True):
     """ Produces a violin plot with seaborn. data1 is a pandas dataframe and cols is a list
     with the names of each column within both data that one wishes to produce the figure about.
     Title is a string with the name to be used
+    HOW TO INTERPRET IT: each box represents a policy, with 'one' being every case that had that particular policy used,
+     and 'zero' with every other case. Within a violin, zero represents non-optimal and one represents optimal.
+      Best case is specific policy has a larger plot at one and the options have a larget plot at zero: most of the
+       cases of that policy are optimal and most of the cases that did not use that policy were not optimal
     :param data1: pandas DataFrame
     :param title: name of the plot
     :param cols: Columns to plot
@@ -19,7 +23,7 @@ def plot_iqrs(data1, title, cols, save=True, output='png', y='Tree', show=True):
     :return: None
     """
     rows, cs = max(1, (len(cols) // 4)), 4
-    fig, axes = plt.subplots(nrows=rows, ncols=cs, squeeze=False)
+    fig, axes = plt.subplots(nrows=rows, ncols=cs, squeeze=False, sharey=True)
     for i in range(rows):
         for j in range(cs):
             if len(cols) > i * 4 + j:
@@ -28,9 +32,8 @@ def plot_iqrs(data1, title, cols, save=True, output='png', y='Tree', show=True):
     # fig.tight_layout()
     fig.suptitle(title)
 
-    """
-    HOW TO INTERPRET IT: each box represents a policy, with 'one' being every case that had that particular policy used, and 'zero' with every other case. Within a violin, zero represents non-optimal and one represents optimal. Best case is specific policy has a larger plot at one and the options have a larget plot at zero: most of the cases of that policy are optimal and most of the cases that did not use that policy were not optimal
-    """
+    for ax in fig.get_axes():
+        ax.label_outer()
 
     plt.show() if show is True else None
     fig.savefig(f'../text/figures/{title}.{output}', bbox_inches='tight') if save is True else None
