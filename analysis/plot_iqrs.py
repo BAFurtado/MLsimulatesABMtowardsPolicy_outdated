@@ -28,7 +28,7 @@ def plot_iqrs(data1, title, cols, save=True, output='png', y='Tree', show=True):
         for j in range(cs):
             if len(cols) > i * 4 + j:
                 sea.violinplot(x=cols[i * 4 + j], y=y, data=data1, ax=axes[i, j])
-    fig.set_size_inches(11.69, 8.27) if rows > 1 else None
+    # fig.set_size_inches(11.69, 8.27) if rows > 1 else None
     # fig.tight_layout()
     fig.suptitle(title)
 
@@ -45,7 +45,7 @@ if __name__ == '__main__':
     csv = pd.read_csv('../../Tree_gdp_index_75_gini_index_25_1000000_temp_stats.csv',
                       sep=';')
 
-    acps = ['all'] + groups_cols.abm_dummies['acps']
+    acps = ['all'] #+ groups_cols.abm_dummies['acps']
 
     # first we loop in relation to ACP's
     for ACP in acps:
