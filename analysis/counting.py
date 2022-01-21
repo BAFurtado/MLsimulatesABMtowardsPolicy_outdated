@@ -37,7 +37,7 @@ def getting_counting(data, name):
 # Parameters analysis
 def coefficient_variation_comparison(simulated, ml):
     """ This function compares the ABM simulated results to the ML surrogate results in order to identify the
-    differences between the two methods. How much of the cases fall under the optimal or non-optimal categories?
+    differences between the two methods. How much of the cases fall under the optimal in relation to the mean?
     GOA 9/1: added the column difference, in order to streamline what would
     otherwise be operations done in excel
 

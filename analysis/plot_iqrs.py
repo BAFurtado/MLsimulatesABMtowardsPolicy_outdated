@@ -45,7 +45,7 @@ if __name__ == '__main__':
     csv = pd.read_csv('../../Tree_gdp_index_75_gini_index_25_1000000_temp_stats.csv',
                       sep=';')
 
-    acps = ['all'] #+ groups_cols.abm_dummies['acps']
+    acps = ['all'] + groups_cols.abm_dummies['acps']
 
     # first we loop in relation to ACP's
     for ACP in acps:
