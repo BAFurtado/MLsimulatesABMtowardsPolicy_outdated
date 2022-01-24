@@ -77,8 +77,8 @@ abm_dummies_show = {'POLICIES_buy' : 'Policy: buy',
                     'STARTING_DAY_2010-01-01': 'Jan. 2010',
                     'FPM_DISTRIBUTION_False': 'FPM: False',
                     'FPM_DISTRIBUTION_True': 'FPM: True',
-                    'ALTERNATIVE0_False' : 'Alternative0: False',
-                    'ALTERNATIVE0_True' : 'Alternative0: True'
+                    'ALTERNATIVE0_False': 'Alternative0: False',
+                    'ALTERNATIVE0_True': 'Alternative0: True'
                     }
 
 # 'CONSTRUCTION_ACC_CASH_FLOW',
