@@ -41,6 +41,7 @@ abm_dummies = {'policies': ['POLICIES_buy', 'POLICIES_rent', 'POLICIES_wage', 'P
 abm_dummies_show = {'POLICIES_buy' : 'Policy: buy',
                     'POLICIES_rent': 'Policy: rent',
                     'POLICIES_wage': 'Policy: wage',
+                    'POLICIES_no_policy' : 'Policy: none',
                     'PROCESSING_ACPS_BELO HORIZONTE': 'Belo Horizonte',
                     'PROCESSING_ACPS_FORTALEZA': 'Fortaleza',
                     'PROCESSING_ACPS_PORTO ALEGRE': 'Porto Alegre',
@@ -78,7 +79,10 @@ abm_dummies_show = {'POLICIES_buy' : 'Policy: buy',
                     'FPM_DISTRIBUTION_False': 'FPM: False',
                     'FPM_DISTRIBUTION_True': 'FPM: True',
                     'ALTERNATIVE0_False': 'Alternative0: False',
-                    'ALTERNATIVE0_True': 'Alternative0: True'
+                    'ALTERNATIVE0_True': 'Alternative0: True',
+                    'INTEREST_fixed' : 'Interest: fixed',
+                    'INTEREST_real' : 'Interest: real',
+                    'INTEREST_nominal' : 'Interest: nominal'
                     }
 
 # 'CONSTRUCTION_ACC_CASH_FLOW',
@@ -125,7 +129,7 @@ abm_params_show = {'HIRING_SAMPLE_SIZE': 'Hiring sample size',
                    'POLICY_QUANTILE': 'Policy Quantile',
                    'PRIVATE_TRANSIT_COST': 'Cost of private transit',
                    'PRODUCTIVITY_EXPONENT': 'Productivity: exponent',
-                   'PRODUCTIVITY_MAGNITUDE_DIVISOR': '',
+                   'PRODUCTIVITY_MAGNITUDE_DIVISOR': 'Productivity: divisor',
                    'PUBLIC_TRANSIT_COST': 'Cost of public transit',
                    'SIZE_MARKET': 'Perceived market size',
                    'STICKY_PRICES': 'Sticky Prices',
