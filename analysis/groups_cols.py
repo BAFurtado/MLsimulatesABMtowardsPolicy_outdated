@@ -1,4 +1,3 @@
-
 abm_dummies = {'policies': ['POLICIES_buy', 'POLICIES_rent', 'POLICIES_wage', 'POLICIES_no_policy'],
                'interest': ['INTEREST_fixed', 'INTEREST_real', 'INTEREST_nominal'],
                'acps': ['PROCESSING_ACPS_BELO HORIZONTE',
@@ -38,10 +37,10 @@ abm_dummies = {'policies': ['POLICIES_buy', 'POLICIES_rent', 'POLICIES_wage', 'P
                'r_metro_fund': ['ALTERNATIVE0_False', 'ALTERNATIVE0_True']
                }
 
-abm_dummies_show = {'POLICIES_buy' : 'Policy: buy',
+abm_dummies_show = {'POLICIES_buy': 'Policy: buy',
                     'POLICIES_rent': 'Policy: rent',
                     'POLICIES_wage': 'Policy: wage',
-                    'POLICIES_no_policy' : 'Policy: none',
+                    'POLICIES_no_policy': 'Policy: none',
                     'PROCESSING_ACPS_BELO HORIZONTE': 'Belo Horizonte',
                     'PROCESSING_ACPS_FORTALEZA': 'Fortaleza',
                     'PROCESSING_ACPS_PORTO ALEGRE': 'Porto Alegre',
@@ -80,9 +79,9 @@ abm_dummies_show = {'POLICIES_buy' : 'Policy: buy',
                     'FPM_DISTRIBUTION_True': 'FPM: True',
                     'ALTERNATIVE0_False': 'Alternative0: False',
                     'ALTERNATIVE0_True': 'Alternative0: True',
-                    'INTEREST_fixed' : 'Interest: fixed',
-                    'INTEREST_real' : 'Interest: real',
-                    'INTEREST_nominal' : 'Interest: nominal'
+                    'INTEREST_fixed': 'Interest: fixed',
+                    'INTEREST_real': 'Interest: real',
+                    'INTEREST_nominal': 'Interest: nominal'
                     }
 
 # 'CONSTRUCTION_ACC_CASH_FLOW',
