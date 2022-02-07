@@ -1,6 +1,7 @@
-import os
-import pandas as pd
+
 import numpy as np
+import pandas as pd
+
 import groups_cols
 
 # 1. Read tables
@@ -12,56 +13,26 @@ import groups_cols
 # 6. Parameters in general
 
 
-# TO DO do texto
-# DONE # 1. Finish general model figure
-# 2. Finish analysis
-# 3. Write text
-# 4. Include other analysis, plots, robustness...
-
 if __name__ == '__main__':
-    os.getcwd()
-    """ First attempt, just reading the comparison
 
-    c1 = pd.read_csv('../pre_processed_data/comparison_analysis_gdp_index_75_gini_index_25_1000000_temp_stats.csv',
-                     sep=';')
-    c1.rename(columns={'Unnamed: 0': 'params'}, inplace=True)"""
+    csv = pd.read_csv('../pre_processed_data/Tree_gdp_index_75_gini_index_25_1000000_temp_stats.csv', sep=';')
 
-    # GOA 7/12/21: trying to combine the csv's at the analysis folder
-
-    """csv1 = pd.read_csv('current_gdp_index_75_gini_index_25_1000000_temp_stats_0.csv',
-                     sep=';') # this one is 11076 rows x 86 columns"""
-
-    """csv2 = pd.read_csv('current_gdp_index_75_gini_index_25_1000000_temp_stats_1.csv',
-                     sep=';') # this one is 11076 rows x 1 column"""
-
-    # we have to concatenate horizontally
-
-    # GOA 8/12/21: actual table to work with arrived
-
-    csv = pd.read_csv('../../Tree_gdp_index_75_gini_index_25_1000000_temp_stats.csv',
-                      sep=';')  # this is the actual table that we have to work with, 999935 rows by 81 columns
-    # important note: each ../ serves for one step of going up
-    # why were the previous two tables tiny in relation to this one?
-
-    # all columns are pretty much already explained, but the Tree column means optimal:
+    # All columns are pretty much already explained, but the Tree column means optimal
     # 0 is non-optimal and 1 is optimal
 
     # script: we have to separate and aggregate, per characteristic and specially by ACP -->
     #   for each one we have to get median, q3, q1
 
     df = pd.DataFrame()
-
     acps = ['all'] + groups_cols.abm_dummies['acps']
 
     for ACP in acps:
-
         if ACP == 'all':
             plot_df = csv
         else:
             plot_df = csv.loc[csv[ACP] == 1]
 
         for pol in groups_cols.abm_dummies['policies']:
-
             if ACP == 'all' and pol == 'any':
                 rslt_df = csv.loc[csv['POLICIES_no_policy'] == 0]
                 plot_df = csv.loc[csv['POLICIES_no_policy'] == 0]
