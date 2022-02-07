@@ -38,14 +38,13 @@ def getting_counting(data, name):
 def coefficient_variation_comparison(simulated, ml):
     """ This function compares the ABM simulated results to the ML surrogate results in order to identify the
     differences between the two methods. How much of the cases fall under the optimal in relation to the mean?
-    GOA 9/1: added the column difference, in order to streamline what would
-    otherwise be operations done in excel
+    Added the column difference
 
     :param simulated: the simulated database in csv
     :param ml: the ML surrogate database in csv
     :return: returns nothing, but saves the csv
     """
-    table = pd.DataFrame(columns=['simulated_optimal', 'ml_optimal','difference'])
+    table = pd.DataFrame(columns=['simulated_optimal', 'ml_optimal', 'difference'])
     for param in params:
         sim_mean = simulated[param].mean()
         sim_optimal_mean = simulated[simulated['Tree'] == 1][param].mean()
