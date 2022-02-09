@@ -19,7 +19,7 @@ def getting_counting(data, name):
     :param name: name of the file
     :return: returns nothing, but saves the csv
     """
-    table = pd.DataFrame(columns=['size', 'optimal', 'non-optimal', 'optimal_count', 'non-optimal_count'])
+    table = pd.DataFrame(columns=['size', 'optimal', 'non_optimal', 'optimal_count', 'non_optimal_count'])
     for key in dummies:
         for each in dummies[key]:
             sample_size = len(data[data[each] == 1])/len(data)
@@ -30,9 +30,9 @@ def getting_counting(data, name):
                   f'non-optimal {non_optimal/total:.04f}: optimal_count {optimal} non-optimal_count {non_optimal}')
             table.loc[each, 'size'] = sample_size
             table.loc[each, 'optimal'] = optimal/total
-            table.loc[each, 'non-optimal'] = non_optimal/total
+            table.loc[each, 'non_optimal'] = non_optimal/total
             table.loc[each, 'optimal_count'] = optimal
-            table.loc[each, 'non-optimal_count'] = non_optimal
+            table.loc[each, 'non_optimal_count'] = non_optimal
     table.to_csv(f'../pre_processed_data/counting_{name}.csv', sep=';')
 
 
