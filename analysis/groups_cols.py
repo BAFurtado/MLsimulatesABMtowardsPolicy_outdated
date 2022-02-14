@@ -122,7 +122,8 @@ abm_dummies_show = {'POLICIES_buy': 'Policy: buy',
                     'PROCESSING_ACPS_RIBEIRAO PRETO': 'Ribeirão Preto',
                     'PROCESSING_ACPS_RIO DE JANEIRO': 'Rio de Janeiro',
                     'PROCESSING_ACPS_SANTOS': 'Santos',
-                    'PROCESSING_ACPS_VOLTA REDONDA - BARRA MANSA': 'Volta Redonda'}
+                    'PROCESSING_ACPS_VOLTA REDONDA - BARRA MANSA': 'Volta Redonda',
+                    'all': 'All'}
 
 # 'CONSTRUCTION_ACC_CASH_FLOW',
 # 'LOT_COST',
