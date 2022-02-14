@@ -17,6 +17,7 @@ def plotting(data, name='name'):
     plt.xticks(range(len(lbsl)), lbsl, rotation='vertical', fontsize=7)
     ax.legend(['Purchase', 'Rent vouchers', 'Monetary aid', 'no-policy baseline'],
               edgecolor='white', loc='upper center', facecolor='white', framealpha=1)
+    plt.ylabel("Percentage of Metropolitan Regions' optimal cases per policy")
     leg = ax.get_legend()
     # hl_dict = {handle.get_label(): handle for handle in leg.legendHandles}
 
