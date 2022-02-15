@@ -42,6 +42,8 @@ def coefficient_variation_comparison(simulated, ml):
     differences between the two methods. How much of the cases fall under the optimal in relation to the mean?
     Added the column difference
 
+    Using standard-score: (optimal value mean - full sample mean) / full sample standard-deviation
+
     :param simulated: the simulated database in csv
     :param ml: the ML surrogate database in csv
     :return: returns nothing, but saves the csv
@@ -49,13 +51,15 @@ def coefficient_variation_comparison(simulated, ml):
     table = pd.DataFrame(columns=['simulated_optimal', 'ml_optimal', 'difference'])
     for param in params:
         sim_mean = simulated[param].mean()
+        sim_std = simulated[param].std()
         sim_optimal_mean = simulated[simulated['Tree'] == 1][param].mean()
         ml_mean = ml[param].mean()
+        ml_std = ml[param].std()
         ml_optimal_mean = ml[ml['Tree'] == 1][param].mean()
-        print(f'{param}: {(sim_optimal_mean - sim_mean) / sim_mean:.06f}')
-        print(f'{param}: {(ml_optimal_mean - ml_mean) / ml_mean:.06f}')
-        table.loc[param, 'simulated_optimal'] = (sim_optimal_mean - sim_mean) / sim_mean
-        table.loc[param, 'ml_optimal'] = (ml_optimal_mean - ml_mean) / ml_mean
+        print(f'{param}: {(sim_optimal_mean - sim_mean) / sim_std:.06f}')
+        print(f'{param}: {(ml_optimal_mean - ml_mean) / ml_std:.06f}')
+        table.loc[param, 'simulated_optimal'] = (sim_optimal_mean - sim_mean) / sim_std
+        table.loc[param, 'ml_optimal'] = (ml_optimal_mean - ml_mean) / ml_std
         table.loc[param, 'difference'] = table.loc[param, 'simulated_optimal'] - table.loc[param, 'ml_optimal']
     table.to_csv(f'../pre_processed_data/parameters_comparison.csv', sep=';')
 
@@ -65,7 +69,7 @@ if __name__ == '__main__':
     th = pd.read_csv('../../Tree_gdp_index_75_gini_index_25_1000000_temp_stats.csv', sep=';')
     c = pd.read_csv('../../current_gdp_index_75_gini_index_25_1000000_temp_stats.csv', sep=';')
     c.rename(columns={'0': 'Tree'}, inplace=True)
-    getting_counting(th, 'Tree')
-    getting_counting(c, 'Current')
+    # getting_counting(th, 'Tree')
+    # getting_counting(c, 'Current')
     coefficient_variation_comparison(c, th)
 
