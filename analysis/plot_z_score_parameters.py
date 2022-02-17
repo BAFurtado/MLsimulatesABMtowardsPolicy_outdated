@@ -13,17 +13,17 @@ def plotting(data, col1='simulated_optimal', col2='ml_optimal', name='name'):
         plt.hlines(par,
                    xmin=min(min(d[col1]), min(d[col2])),
                    xmax=max(max(d[col1]), max(d[col2])),
-                   colors='lightgrey', lw=.8, alpha=.3)
+                   colors='lightgrey', lw=.8, alpha=.5)
         ax.plot([data.loc[par, col1], data.loc[par, col2]], [par, par],
                 color=colors[0] if data.loc[par, col1] > data.loc[par, col2]
                 else colors[1], lw=1, alpha=.8)
         for i, each in enumerate([col1, col2]):
             ax.scatter(data.loc[par, each], par, color=colors[i], alpha=.9, marker='o')
 
-    plt.yticks(range(len(lbsl)), lbsl, fontsize=7)
-    ax.legend(['Simulated optimal', 'ML optimal'], edgecolor='white', facecolor='white', framealpha=1)
+    plt.yticks(range(len(lbsl)), lbsl, fontsize=10)
+    ax.legend(['Simulated optimal', 'ML surrogate optimal'], edgecolor='white', facecolor='white', framealpha=1)
     plt.ylabel("Parameters of the ABM model")
-    plt.xlabel(f"z-score in $\sigma$")
+    plt.xlabel(f"z-score of optimal results in relation to the full sample (in $\sigma$)")
     leg = ax.get_legend()
     # # hl_dict = {handle.get_label(): handle for handle in leg.legendHandles}
     for i in range(len(colors)):
