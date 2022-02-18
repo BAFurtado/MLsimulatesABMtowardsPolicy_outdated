@@ -1,5 +1,5 @@
 import pandas as pd
-
+import groups_cols
 from groups_cols import abm_dummies as dummies
 from groups_cols import abm_params as params
 
@@ -44,6 +44,8 @@ def coefficient_variation_comparison(simulated, ml):
 
     Using standard-score: (optimal value mean - full sample mean) / full sample standard-deviation
 
+    Added absolute optimal value for simulated and ML
+
     :param simulated: the simulated database in csv
     :param ml: the ML surrogate database in csv
     :return: returns nothing, but saves the csv
@@ -61,7 +63,40 @@ def coefficient_variation_comparison(simulated, ml):
         table.loc[param, 'simulated_optimal'] = (sim_optimal_mean - sim_mean) / sim_std
         table.loc[param, 'ml_optimal'] = (ml_optimal_mean - ml_mean) / ml_std
         table.loc[param, 'difference'] = table.loc[param, 'simulated_optimal'] - table.loc[param, 'ml_optimal']
+        table.loc[param, 'abs_sim_optimal'] = sim_optimal_mean
+        table.loc[param, 'abs_ml_optimal'] = ml_optimal_mean
     table.to_csv(f'../pre_processed_data/parameters_comparison.csv', sep=';')
+    table.reset_index(inplace=True)
+    table['Parameters'] = table['index'].map(groups_cols.abm_params_show)
+    to_latex = table[['Parameters', 'abs_sim_optimal', 'abs_ml_optimal']]
+    to_latex = to_latex.sort_values(by='Parameters')
+    to_latex.set_index('Parameters', inplace=True)
+    to_latex.to_latex('../pre_processed_data/parameters_comparison_latex.txt',
+                      float_format="{:0.3f}".format)
+
+
+# Parameters analysis
+def normalize_and_optimal(simulated, ml):
+    table = pd.DataFrame(columns=['z_simulated_optimal', 'z_ml_optimal'])
+    for param in params:
+        # normalize
+        simulated.loc[:, f'n_{param}'] = (simulated[param] - simulated[param].min()) / \
+                                         (simulated[param].max() - simulated[param].min())
+        ml.loc[:, f'n_{param}'] = (ml[param] - ml[param].min()) / (ml[param].max() - ml[param].min())
+        sim_optimal_mean = simulated[simulated['Tree'] == 1][f'n_{param}'].mean()
+        ml_optimal_mean = ml[ml['Tree'] == 1][f'n_{param}'].mean()
+        print(f'{param}: {sim_optimal_mean:.06f}')
+        print(f'{param}: {ml_optimal_mean:.06f}')
+        table.loc[param, 'z_simulated_optimal'] = sim_optimal_mean
+        table.loc[param, 'z_ml_optimal'] = ml_optimal_mean
+    table.to_csv(f'../pre_processed_data/parameters_norm_optimal.csv', sep=';')
+    table.reset_index(inplace=True)
+    table['Parameters'] = table['index'].map(groups_cols.abm_params_show)
+    to_latex = table[['Parameters', 'z_simulated_optimal', 'z_ml_optimal']]
+    to_latex = to_latex.sort_values(by='Parameters')
+    to_latex.set_index('Parameters', inplace=True)
+    to_latex.to_latex('../pre_processed_data/parameters_norm_optimal_latex.txt',
+                      float_format="{:0.3f}".format)
 
 
 if __name__ == '__main__':
@@ -71,5 +106,6 @@ if __name__ == '__main__':
     c.rename(columns={'0': 'Tree'}, inplace=True)
     # getting_counting(th, 'Tree')
     # getting_counting(c, 'Current')
-    coefficient_variation_comparison(c, th)
+    # coefficient_variation_comparison(c, th)
+    normalize_and_optimal(c, th)
 
