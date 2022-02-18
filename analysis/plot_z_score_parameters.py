@@ -6,7 +6,7 @@ import groups_cols
 colors = ['tab:blue', 'tab:red']
 
 
-def plotting(data, col1='simulated_optimal', col2='ml_optimal', name='name'):
+def plotting(data, col1='z_simulated_optimal', col2='z_ml_optimal', name='name'):
     lbsl = [groups_cols.abm_params_show[l] for l in data.index.tolist()]
     fig, ax = plt.subplots(figsize=(8, 6))
     for par in data.index:
@@ -34,7 +34,8 @@ def plotting(data, col1='simulated_optimal', col2='ml_optimal', name='name'):
 
 
 if __name__ == '__main__':
-    d = pd.read_csv('../pre_processed_data/parameters_comparison.csv', sep=';')
+    # d = pd.read_csv('../pre_processed_data/parameters_comparison.csv', sep=';')
+    d = pd.read_csv('../pre_processed_data/parameters_norm_optimal.csv', sep=';')
     d.rename(columns={'Unnamed: 0': 'parameters'}, inplace=True)
     d = d.set_index('parameters')
     d = d.sort_values(by='difference')

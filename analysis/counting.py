@@ -89,6 +89,7 @@ def normalize_and_optimal(simulated, ml):
         print(f'{param}: {ml_optimal_mean:.06f}')
         table.loc[param, 'z_simulated_optimal'] = sim_optimal_mean
         table.loc[param, 'z_ml_optimal'] = ml_optimal_mean
+        table.loc[param, 'difference'] = sim_optimal_mean - ml_optimal_mean
     table.to_csv(f'../pre_processed_data/parameters_norm_optimal.csv', sep=';')
     table.reset_index(inplace=True)
     table['Parameters'] = table['index'].map(groups_cols.abm_params_show)
