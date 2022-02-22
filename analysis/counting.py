@@ -91,9 +91,9 @@ def normalize_and_optimal(simulated, ml, name, SIMxML = True, p_value_threshold 
     table = pd.DataFrame(columns=['z_simulated_optimal', 'z_ml_optimal', 'difference', 'p_value', 'reject_null_hypothesis'])
     for param in params:
         # normalize
-        simulated.loc[:, f'n_{param}'] = simulated[param] # - simulated[param].min()) / \
-                                         # (simulated[param].max() - simulated[param].min())
-        ml.loc[:, f'n_{param}'] = ml[param] # - ml[param].min()) / (ml[param].max() - ml[param].min())
+        simulated.loc[:, f'n_{param}'] = (simulated[param] - simulated[param].min()) / \
+                                         (simulated[param].max() - simulated[param].min())
+        ml.loc[:, f'n_{param}'] = (ml[param] - ml[param].min()) / (ml[param].max() - ml[param].min())
         sim_optimal_mean = simulated[simulated['Tree'] == 1][f'n_{param}'].mean()
         ml_optimal_mean = ml[ml['Tree'] == 1][f'n_{param}'].mean()
         ml_mean = ml[f'n_{param}'].mean()
@@ -102,9 +102,9 @@ def normalize_and_optimal(simulated, ml, name, SIMxML = True, p_value_threshold 
         table.loc[param, 'z_simulated_optimal'] = sim_optimal_mean
         table.loc[param, 'z_ml_optimal'] = ml_optimal_mean
         if SIMxML == True:
-            table.loc[param, 'difference'] = (ml_optimal_mean - sim_optimal_mean) #/ np.std(simulated[simulated['Tree'] == 1][f'n_{param}'])
+            table.loc[param, 'difference'] = (sim_optimal_mean - ml_optimal_mean) #/ np.std(simulated[simulated['Tree'] == 1][f'n_{param}'])
         else:
-            table.loc[param, 'difference'] = (ml_optimal_mean - ml_mean)/ np.std(ml[f'n_{param}'])
+            table.loc[param, 'difference'] = (ml_optimal_mean - ml_mean) #/ np.std(ml[f'n_{param}'])
 
         table.loc[param,'p_value'] = scipy.stats.norm.sf(abs(table.loc[param, 'difference']))*2
         table.loc[param,'reject_null_hypothesis'] = 'yes' if table.loc[param,'p_value'] < p_value_threshold else 'no'
@@ -123,8 +123,8 @@ def normalize_and_optimal(simulated, ml, name, SIMxML = True, p_value_threshold 
 
 if __name__ == '__main__':
     # th = pd.read_csv('../pre_processed_data/Tree_gdp_index_75_gini_index_25_1000000_temp_stats_10000.csv', sep=';')
-    th = pd.read_csv('../../Tree_gdp_index_75_gini_index_25_1000000_temp_stats.csv', sep=';')
-    c = pd.read_csv('../../current_gdp_index_75_gini_index_25_1000000_temp_stats.csv', sep=';')
+    th = pd.read_csv('../pre_processed_data/Tree_gdp_index_75_gini_index_25_1000000_temp_stats.csv', sep=';')
+    c = pd.read_csv('../pre_processed_data/current_gdp_index_75_gini_index_25_1000000_temp_stats.csv', sep=';')
     c.rename(columns={'0': 'Tree'}, inplace=True)
     # getting_counting(th, 'Tree')
     # getting_counting(c, 'Current')
