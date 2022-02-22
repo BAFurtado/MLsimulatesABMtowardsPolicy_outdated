@@ -1,0 +1,30 @@
+\begin{tabular}{lll}
+\toprule
+{} & z\_simulated\_optimal & z\_ml\_optimal \\
+Parameters                                   &                     &              \\
+\midrule
+\% firms analyze commute distance             &               0.300 &        0.304 \\
+\% of construction firms                      &               0.030 &        0.030 \\
+\% of population                              &               0.008 &        0.006 \\
+\% that enters the estate market              &               0.005 &        0.005 \\
+Cost of private transit                      &               0.250 &        0.250 \\
+Cost of public transit                       &               0.050 &        0.095 \\
+Frequency of firms entering the labor market &               0.750 &        0.743 \\
+Hiring sample size                           &              20.000 &       19.955 \\
+Loan/permament income ratio                  &               0.600 &        0.599 \\
+Markup                                       &               0.150 &        0.150 \\
+Maximum Loan-to-Value                        &               0.600 &        0.599 \\
+Municipal efficiency management              &               0.000 &        0.000 \\
+Neighborhood effect                          &               2.854 &        2.989 \\
+Perceived market size                        &              10.000 &       10.003 \\
+Policy Quantile                              &               0.168 &        0.196 \\
+Policy coefficient                           &               0.214 &        0.208 \\
+Policy days                                  &             303.009 &      342.513 \\
+Productivity: divisor                        &              12.000 &       11.763 \\
+Productivity: exponent                       &               0.600 &        0.598 \\
+Sticky Prices                                &               0.500 &        0.500 \\
+Supply-demand effect on real estate prices   &               2.000 &        1.999 \\
+Tax over estate transactions                 &               0.005 &        0.005 \\
+Total Days                                   &            3652.000 &     4368.231 \\
+\bottomrule
+\end{tabular}
