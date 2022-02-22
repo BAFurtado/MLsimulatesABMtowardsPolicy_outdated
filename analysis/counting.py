@@ -2,6 +2,8 @@ import pandas as pd
 import groups_cols
 from groups_cols import abm_dummies as dummies
 from groups_cols import abm_params as params
+import scipy.stats
+import numpy as np
 
 
 # Replicating excel results for dummies
@@ -76,37 +78,57 @@ def coefficient_variation_comparison(simulated, ml):
 
 
 # Parameters analysis
-def normalize_and_optimal(simulated, ml):
-    table = pd.DataFrame(columns=['z_simulated_optimal', 'z_ml_optimal'])
+def normalize_and_optimal(simulated, ml, name, SIMxML = True, p_value_threshold = 0.05):
+    """ With this we have the mean of the ML optimal against the mean of the simulated optimal. It might be adequate for
+    determining if the ML is different from the simulation, nevertheless, it would be good for the analysis itself to
+    put the mean against the ML optimal mean in order to reject or not the null hypothesis that the parameter matters
+    for the municipalities or not.
+
+    :param simulated: dataframe, simulated cases
+    :param ml: dataframe, Machine-learning cases
+    :return: produces a latex table and a csv file
+    """
+    table = pd.DataFrame(columns=['z_simulated_optimal', 'z_ml_optimal', 'difference', 'p_value', 'reject_null_hypothesis'])
     for param in params:
         # normalize
-        simulated.loc[:, f'n_{param}'] = (simulated[param] - simulated[param].min()) / \
-                                         (simulated[param].max() - simulated[param].min())
-        ml.loc[:, f'n_{param}'] = (ml[param] - ml[param].min()) / (ml[param].max() - ml[param].min())
+        simulated.loc[:, f'n_{param}'] = simulated[param] # - simulated[param].min()) / \
+                                         # (simulated[param].max() - simulated[param].min())
+        ml.loc[:, f'n_{param}'] = ml[param] # - ml[param].min()) / (ml[param].max() - ml[param].min())
         sim_optimal_mean = simulated[simulated['Tree'] == 1][f'n_{param}'].mean()
         ml_optimal_mean = ml[ml['Tree'] == 1][f'n_{param}'].mean()
+        ml_mean = ml[f'n_{param}'].mean()
         print(f'{param}: {sim_optimal_mean:.06f}')
         print(f'{param}: {ml_optimal_mean:.06f}')
         table.loc[param, 'z_simulated_optimal'] = sim_optimal_mean
         table.loc[param, 'z_ml_optimal'] = ml_optimal_mean
-        table.loc[param, 'difference'] = sim_optimal_mean - ml_optimal_mean
-    table.to_csv(f'../pre_processed_data/parameters_norm_optimal.csv', sep=';')
+        if SIMxML == True:
+            table.loc[param, 'difference'] = (ml_optimal_mean - sim_optimal_mean) #/ np.std(simulated[simulated['Tree'] == 1][f'n_{param}'])
+        else:
+            table.loc[param, 'difference'] = (ml_optimal_mean - ml_mean)/ np.std(ml[f'n_{param}'])
+
+        table.loc[param,'p_value'] = scipy.stats.norm.sf(abs(table.loc[param, 'difference']))*2
+        table.loc[param,'reject_null_hypothesis'] = 'yes' if table.loc[param,'p_value'] < p_value_threshold else 'no'
+        print(table.loc[param,'p_value'])
+    table.to_csv(f'../pre_processed_data/{name}.csv', sep=';')
     table.reset_index(inplace=True)
     table['Parameters'] = table['index'].map(groups_cols.abm_params_show)
     to_latex = table[['Parameters', 'z_simulated_optimal', 'z_ml_optimal']]
     to_latex = to_latex.sort_values(by='Parameters')
     to_latex.set_index('Parameters', inplace=True)
-    to_latex.to_latex('../pre_processed_data/parameters_norm_optimal_latex.txt',
+    to_latex.to_latex(f'../pre_processed_data/{name}.txt',
                       float_format="{:0.3f}".format)
+
+
 
 
 if __name__ == '__main__':
     # th = pd.read_csv('../pre_processed_data/Tree_gdp_index_75_gini_index_25_1000000_temp_stats_10000.csv', sep=';')
-    th = pd.read_csv('../pre_processed_data/Tree_gdp_index_75_gini_index_25_1000000_temp_stats.csv', sep=';')
-    c = pd.read_csv('../pre_processed_data/current_gdp_index_75_gini_index_25_1000000_temp_stats.csv', sep=';')
+    th = pd.read_csv('../../Tree_gdp_index_75_gini_index_25_1000000_temp_stats.csv', sep=';')
+    c = pd.read_csv('../../current_gdp_index_75_gini_index_25_1000000_temp_stats.csv', sep=';')
     c.rename(columns={'0': 'Tree'}, inplace=True)
     # getting_counting(th, 'Tree')
     # getting_counting(c, 'Current')
     # coefficient_variation_comparison(c, th)
-    normalize_and_optimal(c, th)
+    normalize_and_optimal(c, th, 'parameters_norm_optimal')
+    normalize_and_optimal(c, th, 'parameters_norm_optimal_ML', SIMxML=False)
 
