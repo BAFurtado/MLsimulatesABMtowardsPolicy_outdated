@@ -1,6 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-
+from pylab import Circle
 import groups_cols
 
 colors = ['tab:blue', 'tab:red']
@@ -21,12 +21,15 @@ def plotting(data, col1='z_simulated_optimal', col2='z_ml_optimal', name='name')
             ax.scatter(data.loc[par, each], par, color=colors[i], alpha=.9, marker='o')
 
     plt.yticks(range(len(lbsl)), lbsl, fontsize=10)
-    ax.legend(['Simulated optimal', 'ML surrogate optimal'], edgecolor='white', facecolor='white', framealpha=1)
+
+    pts = Circle((0, 0))
+    ax.legend([pts, pts], ['ABM Simulated optimal', 'ML surrogate optimal'], edgecolor='white', facecolor='white',
+              framealpha=1, loc='best')
     plt.ylabel("Parameters of the ABM model")
-    plt.xlabel(f"z-score of optimal results in relation to the full sample (in $\sigma$)")
+    plt.xlabel(f"Standard score of optimal results")
     leg = ax.get_legend()
-    # # hl_dict = {handle.get_label(): handle for handle in leg.legendHandles}
     for i in range(len(colors)):
+        # leg.legendHandles[i].set_marker('o')
         leg.legendHandles[i].set_color(colors[i])
     plt.tight_layout()
     plt.savefig(f'parameters.png', dpi=300)
