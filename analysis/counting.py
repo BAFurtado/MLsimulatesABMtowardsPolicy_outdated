@@ -86,17 +86,19 @@ def normalize_and_optimal(simulated, ml, name, first_variable, second_variable,
     put the mean against the ML optimal mean in order to reject or not the null hypothesis that the parameter matters
     for the municipalities or not.
 
-    z-score = estatística de teste - média observada / desvio padrão/ raiz do número de observações (Gujarati, p. 832) <- Internet does not use the square root of observations
+    z-score = estatística de teste - média observada / desvio padrão/ raiz do número de observações (Gujarati, p. 832)
+     <- Internet does not use the square root of observations
 
-    :param name:
-    :param SIMxML:
-    :param p_value_threshold:
+    :param second_variable: second variable (standard error draws from this one)
+    :param first_variable: first variable to be analyzed (non-optimal, optimal or mean for simulated or surrogate)
+    :param name: output name for the csv
+    :param p_value_threshold: p-value threshold for the z-test (0.05 by default)
     :param simulated: dataframe, simulated cases
     :param ml: dataframe, Machine-learning cases
     :return: produces a latex table and a csv file
     """
     table = pd.DataFrame(columns=['z_simulated_optimal', 'z_ml_optimal', 'z_simulated_non_optimal', 'z_ml_non_optimal',
-                                  'difference', 'p_value', 'reject_null_hypothesis'])
+                                  'difference_optimals', 'difference', 'p_value', 'reject_null_hypothesis'])
     for param in params:
         # normalize
         simulated.loc[:, f'n_{param}'] = (simulated[param] - simulated[param].min()) / \
@@ -116,10 +118,12 @@ def normalize_and_optimal(simulated, ml, name, first_variable, second_variable,
         sim_non_optimal_std = np.std(simulated[simulated['Tree'] == 0][f'n_{param}'])
         # print(f'{param}: {sim_optimal_mean:.06f}')
         # print(f'{param}: {ml_optimal_mean:.06f}')
-        table.loc[param, 'z_simulated_optimal'] = sim_optimal_mean
-        table.loc[param, 'z_ml_optimal'] = ml_optimal_mean
-        table.loc[param, 'z_simulated_non_optimal'] = sim_non_optimal_mean
-        table.loc[param, 'z_ml_non_optimal'] = ml_non_optimal_mean
+        table.loc[param, 'z_simulated_optimal'] = (sim_optimal_mean - sim_mean) / sim_std
+        table.loc[param, 'z_ml_optimal'] = (ml_optimal_mean - ml_mean) / ml_std
+        table.loc[param, 'z_simulated_non_optimal'] = (sim_non_optimal_mean - sim_mean) / sim_std
+        table.loc[param, 'z_ml_non_optimal'] = (ml_non_optimal_mean - ml_mean) / ml_std
+        table.loc[param, 'difference_optimals'] = (table.loc[param, 'z_simulated_optimal'] -
+                                                   table.loc[param, 'z_ml_optimal'])
 
         variable_dict = {"sim_optimal_mean": sim_optimal_mean,
                          "sim_non_optimal_mean": sim_non_optimal_mean,
@@ -162,8 +166,8 @@ def normalize_and_optimal(simulated, ml, name, first_variable, second_variable,
 
 if __name__ == '__main__':
     # th = pd.read_csv('../pre_processed_data/Tree_gdp_index_75_gini_index_25_1000000_temp_stats_10000.csv', sep=';')
-    th = pd.read_csv('../../Tree_gdp_index_75_gini_index_25_1000000_temp_stats.csv', sep=';')
-    c = pd.read_csv('../../current_gdp_index_75_gini_index_25_1000000_temp_stats.csv', sep=';')
+    th = pd.read_csv('../pre_processed_data/Tree_gdp_index_75_gini_index_25_1000000_temp_stats.csv', sep=';')
+    c = pd.read_csv('../pre_processed_data/current_gdp_index_75_gini_index_25_1000000_temp_stats.csv', sep=';')
     c.rename(columns={'0': 'Tree'}, inplace=True)
     # getting_counting(th, 'Tree')
     # getting_counting(c, 'Current')
