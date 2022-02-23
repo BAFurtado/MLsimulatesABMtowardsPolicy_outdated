@@ -4,6 +4,7 @@ from groups_cols import abm_dummies as dummies
 from groups_cols import abm_params as params
 import scipy.stats
 import numpy as np
+import math
 
 
 # Replicating excel results for dummies
@@ -24,15 +25,15 @@ def getting_counting(data, name):
     table = pd.DataFrame(columns=['size', 'optimal', 'non_optimal', 'optimal_count', 'non_optimal_count'])
     for key in dummies:
         for each in dummies[key]:
-            sample_size = len(data[data[each] == 1])/len(data)
+            sample_size = len(data[data[each] == 1]) / len(data)
             optimal = len(data[(data[each] == 1) & (data['Tree'] == 1)])
             non_optimal = len(data[(data[each] == 1) & (data['Tree'] == 0)])
             total = optimal + non_optimal
-            print(f'{each}: size {sample_size:.04f}: optimal {optimal/total:.0f}: '
-                  f'non-optimal {non_optimal/total:.04f}: optimal_count {optimal} non-optimal_count {non_optimal}')
+            print(f'{each}: size {sample_size:.04f}: optimal {optimal / total:.0f}: '
+                  f'non-optimal {non_optimal / total:.04f}: optimal_count {optimal} non-optimal_count {non_optimal}')
             table.loc[each, 'size'] = sample_size
-            table.loc[each, 'optimal'] = optimal/total
-            table.loc[each, 'non_optimal'] = non_optimal/total
+            table.loc[each, 'optimal'] = optimal / total
+            table.loc[each, 'non_optimal'] = non_optimal / total
             table.loc[each, 'optimal_count'] = optimal
             table.loc[each, 'non_optimal_count'] = non_optimal
     table.to_csv(f'../pre_processed_data/counting_{name}.csv', sep=';')
@@ -78,37 +79,77 @@ def coefficient_variation_comparison(simulated, ml):
 
 
 # Parameters analysis
-def normalize_and_optimal(simulated, ml, name, SIMxML = True, p_value_threshold = 0.05):
+def normalize_and_optimal(simulated, ml, name, first_variable, second_variable,
+                          p_value_threshold=0.05):
     """ With this we have the mean of the ML optimal against the mean of the simulated optimal. It might be adequate for
     determining if the ML is different from the simulation, nevertheless, it would be good for the analysis itself to
     put the mean against the ML optimal mean in order to reject or not the null hypothesis that the parameter matters
     for the municipalities or not.
 
+    z-score = estatística de teste - média observada / desvio padrão/ raiz do número de observações (Gujarati, p. 832) <- Internet does not use the square root of observations
+
+    :param name:
+    :param SIMxML:
+    :param p_value_threshold:
     :param simulated: dataframe, simulated cases
     :param ml: dataframe, Machine-learning cases
     :return: produces a latex table and a csv file
     """
-    table = pd.DataFrame(columns=['z_simulated_optimal', 'z_ml_optimal', 'difference', 'p_value', 'reject_null_hypothesis'])
+    table = pd.DataFrame(columns=['z_simulated_optimal', 'z_ml_optimal', 'z_simulated_non_optimal', 'z_ml_non_optimal',
+                                  'difference', 'p_value', 'reject_null_hypothesis'])
     for param in params:
         # normalize
         simulated.loc[:, f'n_{param}'] = (simulated[param] - simulated[param].min()) / \
                                          (simulated[param].max() - simulated[param].min())
         ml.loc[:, f'n_{param}'] = (ml[param] - ml[param].min()) / (ml[param].max() - ml[param].min())
         sim_optimal_mean = simulated[simulated['Tree'] == 1][f'n_{param}'].mean()
+        sim_non_optimal_mean = simulated[simulated['Tree'] == 0][f'n_{param}'].mean()
         ml_optimal_mean = ml[ml['Tree'] == 1][f'n_{param}'].mean()
+        ml_optimal_std = np.std(ml[ml['Tree'] == 1][f'n_{param}'])
+        ml_non_optimal_mean = ml[ml['Tree'] == 0][f'n_{param}'].mean()
         ml_mean = ml[f'n_{param}'].mean()
-        print(f'{param}: {sim_optimal_mean:.06f}')
-        print(f'{param}: {ml_optimal_mean:.06f}')
+        ml_std = np.std(ml[f'n_{param}'])
+        ml_non_optimal_std = np.std(ml[ml['Tree'] == 0][f'n_{param}'])
+        sim_mean = simulated[f'n_{param}'].mean()
+        sim_std = np.std(simulated[f'n_{param}'])
+        sim_optimal_std = np.std(simulated[simulated['Tree'] == 1][f'n_{param}'])
+        sim_non_optimal_std = np.std(simulated[simulated['Tree'] == 0][f'n_{param}'])
+        # print(f'{param}: {sim_optimal_mean:.06f}')
+        # print(f'{param}: {ml_optimal_mean:.06f}')
         table.loc[param, 'z_simulated_optimal'] = sim_optimal_mean
         table.loc[param, 'z_ml_optimal'] = ml_optimal_mean
-        if SIMxML == True:
-            table.loc[param, 'difference'] = (sim_optimal_mean - ml_optimal_mean) #/ np.std(simulated[simulated['Tree'] == 1][f'n_{param}'])
-        else:
-            table.loc[param, 'difference'] = (ml_optimal_mean - ml_mean) #/ np.std(ml[f'n_{param}'])
+        table.loc[param, 'z_simulated_non_optimal'] = sim_non_optimal_mean
+        table.loc[param, 'z_ml_non_optimal'] = ml_non_optimal_mean
 
-        table.loc[param,'p_value'] = scipy.stats.norm.sf(abs(table.loc[param, 'difference']))*2
-        table.loc[param,'reject_null_hypothesis'] = 'yes' if table.loc[param,'p_value'] < p_value_threshold else 'no'
-        print(table.loc[param,'p_value'])
+        variable_dict = {"sim_optimal_mean": sim_optimal_mean,
+                         "sim_non_optimal_mean": sim_non_optimal_mean,
+                         "ml_optimal_mean": ml_optimal_mean,
+                         "ml_mean": ml_mean,
+                         "ml_non_optimal_mean": ml_non_optimal_mean,
+                         "sim_mean": sim_mean}
+
+        std_dict = {"sim_optimal_mean": sim_optimal_std,
+                    "sim_non_optimal_mean": sim_non_optimal_std,
+                    "ml_optimal_mean": ml_optimal_std,
+                    'ml_mean': ml_std,
+                    "ml_non_optimal_mean": ml_non_optimal_std,
+                    "sim_mean": sim_std}
+
+        if std_dict[second_variable] > 0:
+            difference = (variable_dict[first_variable] - variable_dict[second_variable] / std_dict[second_variable])
+        else:
+            difference = 'STD=0'
+
+        table.loc[param, 'difference'] = difference
+
+        if difference != 'STD=0':
+            table.loc[param, 'p_value'] = scipy.stats.norm.sf(abs(table.loc[param, 'difference'])) * 2
+            table.loc[param, 'reject_null_hypothesis'] = 'yes' if table.loc[
+                                                                      param, 'p_value'] < p_value_threshold else 'no'
+        else:
+            table.loc[param, 'p_value'] = 'not_applicable'
+            table.loc[param, 'reject_null_hypothesis'] = 'not_applicable'
+        # print(table.loc[param,'p_value'])
     table.to_csv(f'../pre_processed_data/{name}.csv', sep=';')
     table.reset_index(inplace=True)
     table['Parameters'] = table['index'].map(groups_cols.abm_params_show)
@@ -119,16 +160,52 @@ def normalize_and_optimal(simulated, ml, name, SIMxML = True, p_value_threshold 
                       float_format="{:0.3f}".format)
 
 
-
-
 if __name__ == '__main__':
     # th = pd.read_csv('../pre_processed_data/Tree_gdp_index_75_gini_index_25_1000000_temp_stats_10000.csv', sep=';')
-    th = pd.read_csv('../pre_processed_data/Tree_gdp_index_75_gini_index_25_1000000_temp_stats.csv', sep=';')
-    c = pd.read_csv('../pre_processed_data/current_gdp_index_75_gini_index_25_1000000_temp_stats.csv', sep=';')
+    th = pd.read_csv('../../Tree_gdp_index_75_gini_index_25_1000000_temp_stats.csv', sep=';')
+    c = pd.read_csv('../../current_gdp_index_75_gini_index_25_1000000_temp_stats.csv', sep=';')
     c.rename(columns={'0': 'Tree'}, inplace=True)
     # getting_counting(th, 'Tree')
     # getting_counting(c, 'Current')
     # coefficient_variation_comparison(c, th)
-    normalize_and_optimal(c, th, 'parameters_norm_optimal')
-    normalize_and_optimal(c, th, 'parameters_norm_optimal_ML', SIMxML=False)
 
+    """ Variables : "sim_optimal_mean",
+        "sim_non_optimal_mean",
+        "ml_optimal_mean",
+        "ml_mean,
+        "ml_non_optimal_mean",
+        "sim_mean"""
+
+    # second variable is the population mean, so it should at least be the one with more observations
+
+    #New name of the dataframes: parameters_first_variable_v_second_variable
+
+    normalize_and_optimal(c, th, 'parameters_SIM_non_optimal_v_SIM_optimal',
+                          "sim_optimal_mean", "sim_non_optimal_mean")
+    normalize_and_optimal(c, th, 'parameters_SIM_optimal_v_SIM',
+                          "sim_optimal_mean", "sim_mean")
+    normalize_and_optimal(c, th, 'parameters_SIM_non_optimal_v_SIM',
+                          "sim_non_optimal_mean", "sim_mean")
+    normalize_and_optimal(c, th, 'parameters_SIM_optimal_v_ML_optimal',
+                          "sim_optimal_mean", "ml_optimal_mean")
+    normalize_and_optimal(c, th, 'parameters_SIM_optimal_v_ML',
+                          "sim_optimal_mean", "ml_mean")
+    normalize_and_optimal(c, th, 'parameters_SIM_v_ML_optimal',
+                          "sim_mean", "ml_optimal_mean")
+    normalize_and_optimal(c, th, 'parameters_SIM_v_ML_non_optimal',
+                          "sim_mean", "ml_non_optimal_mean")
+    normalize_and_optimal(c, th, 'parameters_SIM_v_ML',
+                          "sim_mean", "ml_mean")
+    normalize_and_optimal(c, th, 'parameters_ML_optimal_v_ML_non_optimal',
+                          "ml_optimal_mean", "ml_optimal_mean")
+    normalize_and_optimal(c, th, 'parameters_ML_optimal_v_ML',
+                          "ml_optimal_mean", "ml_mean")
+    normalize_and_optimal(c, th, 'parameters_SIM_non_optimal_v_ML_non_optimal',
+                          "sim_non_optimal_mean", "ml_non_optimal_mean")  # this one is the best for comparison
+
+
+    """
+    Dummies
+    """
+
+    # TBD: dummies use a different type of z-score
