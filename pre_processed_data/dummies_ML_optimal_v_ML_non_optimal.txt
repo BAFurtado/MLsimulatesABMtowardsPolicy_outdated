@@ -1,0 +1,69 @@
+\begin{tabular}{lll}
+\toprule
+{} & z\_simulated\_optimal & z\_ml\_optimal \\
+Dummies             &                     &              \\
+\midrule
+Alternative0: False &              -0.015 &       -0.002 \\
+Alternative0: True  &               0.015 &        0.002 \\
+Aracaju             &              -0.033 &       -0.009 \\
+Belo Horizonte      &               0.700 &        0.148 \\
+Belém               &               0.090 &        0.014 \\
+Brasília            &              -0.562 &       -0.057 \\
+Campina Grande      &              -0.033 &       -0.005 \\
+Campinas            &               0.252 &        0.053 \\
+Campo Grande        &              -0.033 &       -0.005 \\
+Campos              &              -0.033 &       -0.008 \\
+Caxias do Sul       &              -0.033 &       -0.006 \\
+Crato               &              -0.033 &       -0.006 \\
+Cuiabá              &              -0.033 &       -0.006 \\
+Curitiba            &               0.241 &        0.068 \\
+FPM: False          &              -0.015 &       -0.001 \\
+FPM: True           &               0.015 &        0.001 \\
+Feira de Santana    &              -0.033 &       -0.007 \\
+Florianópolis       &              -0.033 &       -0.006 \\
+Fortaleza           &              -0.024 &       -0.009 \\
+Goiânia             &              -0.033 &       -0.007 \\
+Ilheus-Itabuna      &              -0.033 &       -0.006 \\
+Interest: fixed     &              -0.009 &        0.000 \\
+Interest: nominal   &              -0.009 &       -0.001 \\
+Interest: real      &               0.015 &        0.000 \\
+Ipatinga            &              -0.033 &       -0.006 \\
+Jan. 2000           &              -0.026 &       -0.003 \\
+Jan. 2010           &               0.026 &        0.003 \\
+Joinville           &              -0.013 &       -0.004 \\
+João Pessoa         &              -0.033 &       -0.005 \\
+Juiz de Fora        &              -0.033 &       -0.007 \\
+Jundiai             &              -0.033 &       -0.007 \\
+Licenses: False     &              -0.009 &        0.000 \\
+Licenses: Random    &               0.015 &       -0.001 \\
+Licenses: True      &              -0.009 &        0.001 \\
+Londrina            &              -0.033 &       -0.006 \\
+Macapá              &              -0.033 &       -0.007 \\
+Maceio              &              -0.033 &       -0.004 \\
+Manaus              &              -0.033 &       -0.005 \\
+Maringá             &              -0.033 &       -0.004 \\
+NH-SL               &              -0.033 &       -0.006 \\
+Natal               &              -0.033 &       -0.008 \\
+Pelotas             &              -0.033 &       -0.004 \\
+Petrolina-Juazeiro  &              -0.033 &       -0.006 \\
+Policy: buy         &              -0.117 &       -0.316 \\
+Policy: none        &              -0.293 &       -0.062 \\
+Policy: rent        &               0.171 &        0.172 \\
+Policy: wage        &               0.302 &        0.206 \\
+Porto Alegre        &              -0.054 &       -0.029 \\
+Recife              &              -0.033 &       -0.006 \\
+Ribeirão Preto      &              -0.033 &       -0.007 \\
+Rio de Janeiro      &               0.422 &        0.018 \\
+SJC                 &              -0.033 &       -0.006 \\
+SJRP                &              -0.033 &       -0.009 \\
+Salvador            &               0.031 &       -0.008 \\
+Santos              &              -0.033 &       -0.009 \\
+Sao Luis            &              -0.033 &       -0.008 \\
+Sorocaba            &              -0.033 &       -0.006 \\
+São Paulo           &               0.541 &        0.026 \\
+Teresina            &              -0.033 &       -0.007 \\
+Uberlandia          &              -0.033 &       -0.005 \\
+Vitória             &              -0.033 &       -0.006 \\
+Volta Redonda       &              -0.033 &       -0.006 \\
+\bottomrule
+\end{tabular}
