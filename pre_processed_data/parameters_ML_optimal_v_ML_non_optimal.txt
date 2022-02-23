@@ -3,28 +3,28 @@
 {} & z\_simulated\_optimal & z\_ml\_optimal \\
 Parameters                                   &                     &              \\
 \midrule
-\% firms analyze commute distance             &              -0.059 &       -0.013 \\
-\% of construction firms                      &              -0.071 &       -0.004 \\
-\% of population                              &              -1.391 &       -0.983 \\
-\% that enters the estate market              &              -0.091 &       -0.022 \\
-Cost of private transit                      &              -0.000 &       -0.004 \\
-Cost of public transit                       &              -0.089 &       -0.039 \\
-Frequency of firms entering the labor market &               0.079 &        0.011 \\
-Hiring sample size                           &               0.044 &        0.002 \\
-Loan/permament income ratio                  &               0.040 &        0.005 \\
-Markup                                       &               0.000 &       -0.001 \\
-Maximum Loan-to-Value                        &               0.040 &        0.002 \\
-Municipal efficiency management              &              -0.009 &       -0.004 \\
-Neighborhood effect                          &              -0.738 &       -0.007 \\
-Perceived market size                        &              -0.007 &        0.001 \\
-Policy Quantile                              &              -0.254 &       -0.029 \\
-Policy coefficient                           &              -0.024 &       -0.007 \\
-Policy days                                  &              -0.288 &       -0.061 \\
-Productivity: divisor                        &              -0.056 &       -0.004 \\
-Productivity: exponent                       &               0.052 &        0.001 \\
-Sticky Prices                                &               0.000 &       -0.001 \\
-Supply-demand effect on real estate prices   &               0.000 &       -0.003 \\
-Tax over estate transactions                 &               0.052 &        0.001 \\
-Total Days                                   &              -0.118 &       -0.044 \\
+\% firms analyze commute distance             &              -0.013 &       -0.005 \\
+\% of construction firms                      &              -0.003 &       -0.000 \\
+\% of population                              &              -0.053 &       -0.065 \\
+\% that enters the estate market              &              -0.005 &       -0.001 \\
+Cost of private transit                      &              -0.000 &       -0.001 \\
+Cost of public transit                       &              -0.015 &       -0.010 \\
+Frequency of firms entering the labor market &               0.016 &        0.004 \\
+Hiring sample size                           &               0.048 &        0.005 \\
+Loan/permament income ratio                  &               0.007 &        0.002 \\
+Markup                                       &              -0.000 &       -0.000 \\
+Maximum Loan-to-Value                        &               0.007 &        0.001 \\
+Municipal efficiency management              &              -0.000 &       -0.000 \\
+Neighborhood effect                          &              -0.322 &       -0.005 \\
+Perceived market size                        &              -0.006 &        0.001 \\
+Policy Quantile                              &              -0.052 &       -0.010 \\
+Policy coefficient                           &              -0.005 &       -0.002 \\
+Policy days                                  &              -2.449 &       -0.836 \\
+Productivity: divisor                        &              -0.070 &       -0.009 \\
+Productivity: exponent                       &               0.010 &        0.000 \\
+Sticky Prices                                &              -0.000 &       -0.000 \\
+Supply-demand effect on real estate prices   &               0.000 &       -0.002 \\
+Tax over estate transactions                 &               0.001 &        0.000 \\
+Total Days                                   &              -3.127 &       -1.806 \\
 \bottomrule
 \end{tabular}

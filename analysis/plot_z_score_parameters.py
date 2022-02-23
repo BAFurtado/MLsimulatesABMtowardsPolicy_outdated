@@ -38,9 +38,9 @@ def plotting(data, col1='z_simulated_optimal', col2='z_ml_optimal', name='name')
 
 if __name__ == '__main__':
     # d = pd.read_csv('../pre_processed_data/parameters_comparison.csv', sep=';')
-    d = pd.read_csv('../pre_processed_data/parameters_SIM_optimal_v_ML_optimal.csv', sep=';')
+    d = pd.read_csv('../pre_processed_data/parameters_comparison.csv', sep=';')
     d.rename(columns={'Unnamed: 0': 'parameters'}, inplace=True)
     d = d.set_index('parameters')
-    d = d.sort_values(by='difference_optimals')
+    d = d.sort_values(by='difference')
     plotting(d)
 

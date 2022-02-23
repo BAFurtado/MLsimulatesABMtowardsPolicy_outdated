@@ -5,6 +5,7 @@ from groups_cols import abm_params as params
 import scipy.stats
 import numpy as np
 import math
+import itertools
 
 
 # Replicating excel results for dummies
@@ -78,6 +79,94 @@ def coefficient_variation_comparison(simulated, ml):
                       float_format="{:0.3f}".format)
 
 
+# dummies analysis
+def dummies_optimal(simulated, ml, name, first_variable, second_variable,
+                    p_value_threshold=0.05):
+    """
+    z-score for binary data =
+      (proporção teste - proporção null hypothesis)/sqrt(proporção null hypothesis*(1-proporção null hypothesis)/count)
+
+    :param simulated:
+    :param ml:
+    :param name:
+    :param first_variable:
+    :param second_variable:
+    :return:
+    """
+    table = pd.DataFrame(columns=['z_simulated_optimal', 'z_ml_optimal', 'z_simulated_non_optimal', 'z_ml_non_optimal',
+                                  'difference_optimals', 'difference', 'p_value', 'reject_null_hypothesis'])
+
+    dummies = list(itertools.chain.from_iterable(groups_cols.abm_dummies.values()))
+
+    for dummy in dummies:
+        simulated.loc[:, f'n_{dummy}'] = simulated[dummy]
+        ml.loc[:, f'n_{dummy}'] = ml[dummy]
+        sim_optimal_mean = simulated[simulated['Tree'] == 1][f'n_{dummy}'].mean()
+        sim_non_optimal_mean = simulated[simulated['Tree'] == 0][f'n_{dummy}'].mean()
+        ml_optimal_mean = ml[ml['Tree'] == 1][f'n_{dummy}'].mean()
+        ml_optimal_count = np.std(ml[ml['Tree'] == 1][f'n_{dummy}'])
+        ml_non_optimal_mean = ml[ml['Tree'] == 0][f'n_{dummy}'].mean()
+        ml_mean = ml[f'n_{dummy}'].mean()
+        ml_count = np.std(ml[f'n_{dummy}'])
+        ml_non_optimal_count = np.std(ml[ml['Tree'] == 0][f'n_{dummy}'])
+        sim_mean = simulated[f'n_{dummy}'].mean()
+        sim_count = np.std(simulated[f'n_{dummy}'])
+        sim_optimal_count = np.std(simulated[simulated['Tree'] == 1][f'n_{dummy}'])
+        sim_non_optimal_count = np.std(simulated[simulated['Tree'] == 0][f'n_{dummy}'])
+        table.loc[dummy, 'z_simulated_optimal'] = (sim_optimal_mean - sim_mean) / math.sqrt(
+            sim_mean * (1 - sim_mean) / sim_count)
+        table.loc[dummy, 'z_ml_optimal'] = (ml_optimal_mean - ml_mean) / math.sqrt(
+            ml_mean * (1 - ml_mean) / ml_count)
+        table.loc[dummy, 'z_simulated_non_optimal'] = (sim_non_optimal_mean - sim_mean) / math.sqrt(
+            sim_mean * (1 - sim_mean) / sim_count)
+        table.loc[dummy, 'z_ml_non_optimal'] = (ml_non_optimal_mean - ml_mean) / math.sqrt(
+            ml_mean * (1 - ml_mean) / ml_count)
+        table.loc[dummy, 'difference_optimals'] = (table.loc[dummy, 'z_simulated_optimal'] -
+                                                   table.loc[dummy, 'z_ml_optimal'])
+        variable_dict = {"sim_optimal_mean": sim_optimal_mean,
+                         "sim_non_optimal_mean": sim_non_optimal_mean,
+                         "ml_optimal_mean": ml_optimal_mean,
+                         "ml_mean": ml_mean,
+                         "ml_non_optimal_mean": ml_non_optimal_mean,
+                         "sim_mean": sim_mean}
+
+        count_dict = {"sim_optimal_mean": sim_optimal_count,
+                      "sim_non_optimal_mean": sim_non_optimal_count,
+                      "ml_optimal_mean": ml_optimal_count,
+                      'ml_mean': ml_count,
+                      "ml_non_optimal_mean": ml_non_optimal_count,
+                      "sim_mean": sim_count}
+
+        if count_dict[second_variable] > 0:
+            difference = ((variable_dict[first_variable] - variable_dict[second_variable]) /
+                          (variable_dict[second_variable]*(1-variable_dict[second_variable])/
+                           math.sqrt(count_dict[second_variable])))
+        else:
+            difference = 'n=0'
+
+        table.loc[dummy, 'difference'] = difference
+
+        if difference != 'n=0':
+            table.loc[dummy, 'p_value'] = scipy.stats.norm.sf(abs(table.loc[dummy, 'difference'])) * 2
+            table.loc[dummy, 'reject_null_hypothesis'] = 'yes' if table.loc[
+                                                                      dummy, 'p_value'] < p_value_threshold else 'no'
+        else:
+            table.loc[dummy, 'p_value'] = 'not_applicable'
+            table.loc[dummy, 'reject_null_hypothesis'] = 'not_applicable'
+
+
+
+        # print(table.loc[param,'p_value'])
+    table.to_csv(f'../pre_processed_data/{name}.csv', sep=';')
+    table.reset_index(inplace=True)
+    table['Dummies'] = table['index'].map(groups_cols.abm_dummies_show)
+    to_latex = table[['Dummies', 'z_simulated_optimal', 'z_ml_optimal']]
+    to_latex = to_latex.sort_values(by='Dummies')
+    to_latex.set_index('Dummies', inplace=True)
+    to_latex.to_latex(f'../pre_processed_data/{name}.txt',
+                      float_format="{:0.3f}".format)
+
+
 # Parameters analysis
 def normalize_and_optimal(simulated, ml, name, first_variable, second_variable,
                           p_value_threshold=0.05):
@@ -116,12 +205,18 @@ def normalize_and_optimal(simulated, ml, name, first_variable, second_variable,
         sim_std = np.std(simulated[f'n_{param}'])
         sim_optimal_std = np.std(simulated[simulated['Tree'] == 1][f'n_{param}'])
         sim_non_optimal_std = np.std(simulated[simulated['Tree'] == 0][f'n_{param}'])
+        ml_optimal_count = np.std(ml[ml['Tree'] == 1][f'n_{param}'])
+        ml_count = np.std(ml[f'n_{param}'])
+        ml_non_optimal_count = np.std(ml[ml['Tree'] == 0][f'n_{param}'])
+        sim_count = np.std(simulated[f'n_{param}'])
+        sim_non_optimal_count = np.std(simulated[simulated['Tree'] == 0][f'n_{param}'])
+        sim_optimal_count = np.std(simulated[simulated['Tree'] == 1][f'n_{param}'])
         # print(f'{param}: {sim_optimal_mean:.06f}')
         # print(f'{param}: {ml_optimal_mean:.06f}')
-        table.loc[param, 'z_simulated_optimal'] = (sim_optimal_mean - sim_mean) / sim_std
-        table.loc[param, 'z_ml_optimal'] = (ml_optimal_mean - ml_mean) / ml_std
-        table.loc[param, 'z_simulated_non_optimal'] = (sim_non_optimal_mean - sim_mean) / sim_std
-        table.loc[param, 'z_ml_non_optimal'] = (ml_non_optimal_mean - ml_mean) / ml_std
+        table.loc[param, 'z_simulated_optimal'] = (sim_optimal_mean - sim_mean) / (sim_std/ math.sqrt(sim_count))
+        table.loc[param, 'z_ml_optimal'] = (ml_optimal_mean - ml_mean) / (ml_std/ math.sqrt(ml_count))
+        table.loc[param, 'z_simulated_non_optimal'] = (sim_non_optimal_mean - sim_mean) / (sim_std/ math.sqrt(ml_count))
+        table.loc[param, 'z_ml_non_optimal'] = (ml_non_optimal_mean - ml_mean) / (ml_std/ math.sqrt(ml_count))
         table.loc[param, 'difference_optimals'] = (table.loc[param, 'z_simulated_optimal'] -
                                                    table.loc[param, 'z_ml_optimal'])
 
@@ -139,8 +234,16 @@ def normalize_and_optimal(simulated, ml, name, first_variable, second_variable,
                     "ml_non_optimal_mean": ml_non_optimal_std,
                     "sim_mean": sim_std}
 
+        count_dict = {"sim_optimal_mean": sim_optimal_count,
+                      "sim_non_optimal_mean": sim_non_optimal_count,
+                      "ml_optimal_mean": ml_optimal_count,
+                      'ml_mean': ml_count,
+                      "ml_non_optimal_mean": ml_non_optimal_count,
+                      "sim_mean": sim_count}
+
         if std_dict[second_variable] > 0:
-            difference = (variable_dict[first_variable] - variable_dict[second_variable] / std_dict[second_variable])
+            difference = ((variable_dict[first_variable] - variable_dict[second_variable]) /
+                          (std_dict[second_variable]/math.sqrt(count_dict[second_variable])))
         else:
             difference = 'STD=0'
 
@@ -182,7 +285,7 @@ if __name__ == '__main__':
 
     # second variable is the population mean, so it should at least be the one with more observations
 
-    #New name of the dataframes: parameters_first_variable_v_second_variable
+    # New name of the dataframes: parameters_first_variable_v_second_variable
 
     normalize_and_optimal(c, th, 'parameters_SIM_non_optimal_v_SIM_optimal',
                           "sim_optimal_mean", "sim_non_optimal_mean")
@@ -207,9 +310,9 @@ if __name__ == '__main__':
     normalize_and_optimal(c, th, 'parameters_SIM_non_optimal_v_ML_non_optimal',
                           "sim_non_optimal_mean", "ml_non_optimal_mean")  # this one is the best for comparison
 
-
     """
     Dummies
     """
 
-    # TBD: dummies use a different type of z-score
+    dummies_optimal(c,th, 'dummies_ML_optimal_v_ML_non_optimal',
+                    "ml_optimal_mean", "ml_optimal_mean")
