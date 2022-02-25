@@ -81,22 +81,18 @@ def plot_density(sim, ml, col, output):
     return output
 
 
-if __name__ == '__main__':
-    # th = pd.read_csv('../pre_processed_data/Tree_gdp_index_75_gini_index_25_1000000_temp_stats_10000.csv', sep=';')
-    th = pd.read_csv('../pre_processed_data/Tree_gdp_index_75_gini_index_25_1000000_temp_stats.csv', sep=';')
-    c = pd.read_csv('../pre_processed_data/current_gdp_index_75_gini_index_25_1000000_temp_stats.csv', sep=';')
-    c.rename(columns={'0': 'Tree'}, inplace=True)
+def main(sim, ml):
     out = pd.DataFrame(columns=['p_value', 'reject', 'matrix_singular'])
     for n in [True, False]:
-        for p in c.columns:
-            s, m, out = normalize_optimal(c, th, p, out, norm=n)
+        for p in sim.columns:
+            s, m, out = normalize_optimal(sim, ml, p, out, norm=n)
             if n:
                 out = plot_density(s, m, p, out)
         out.to_csv(f'means_comparison_output_norm{n}.csv', sep=';')
     out2 = pd.DataFrame(columns=['p_value', 'reject', 'matrix_singular'])
     for n in [True, False]:
-        for p in th.columns:
-            opt, non, out2 = optimal_non(th, p, out2, norm=n)
+        for p in ml.columns:
+            opt, non, out2 = optimal_non(ml, p, out2, norm=n)
             p_value = comparing_means(opt, non)[1]
             out2.loc[p, 'p_value'] = p_value
             if p_value < .001:
@@ -105,6 +101,29 @@ if __name__ == '__main__':
                 out2.loc[p, 'reject'] = 'equal means'
         out2.to_csv(f'means_comparison_optimal_non_optimal_norm{n}.csv', sep=';')
 
+
+def different(file1, file2):
+    output = list()
+    for param in file1.param:
+        if all(file1.loc[file1['param'] == param, 'reject'] == 'different means'):
+            if all(file2.loc[file2['param'] == param, 'reject'] == 'different means'):
+                output.append(param)
+    return output
+
+
+if __name__ == '__main__':
+    # th = pd.read_csv('../pre_processed_data/Tree_gdp_index_75_gini_index_25_1000000_temp_stats_10000.csv', sep=';')
+
+    # th = pd.read_csv('../pre_processed_data/Tree_gdp_index_75_gini_index_25_1000000_temp_stats.csv', sep=';')
+    # c = pd.read_csv('../pre_processed_data/current_gdp_index_75_gini_index_25_1000000_temp_stats.csv', sep=';')
+    # c.rename(columns={'0': 'Tree'}, inplace=True)
+    # main(c, th)
+
+    o = pd.read_csv('means_comparison_output_normTrue.csv', sep=';')
+    o.rename(columns={'Unnamed: 0': 'param'}, inplace=True)
+    o2 = pd.read_csv('means_comparison_optimal_non_optimal_normTrue.csv', sep=';')
+    o2.rename(columns={'Unnamed: 0': 'param'}, inplace=True)
+    lst_parameters = different(o, o2)
 
 
 
