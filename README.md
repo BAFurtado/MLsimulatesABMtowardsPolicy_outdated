@@ -1,6 +1,16 @@
 # Machine Learning simulates Agent-based Model towards Policy-Making
 
+Currently, writing manuscript.
 
+### Proposed scheme:
+
+![](/home/furtado/MyModels/MLsimulatesABMtowardsPolicy/text/text_images/Model_Figure_proposal.drawio.png)
+
+### Results
+
+![](/home/furtado/MyModels/MLsimulatesABMtowardsPolicy/text/text_images/graph_sorted_POLICIES_no_policy.png)
+
+## Previously:
 Presented at inverse Generative Social Sciences Workshop **iGSS**. 
 
 ### https://www.igss-workshop.org/abstracts#furtado
@@ -88,11 +98,12 @@ Or the size of the sample at generating_random_conf.py
 33. PRIVATE_TRANSIT_COST
 34. PUBLIC_TRANSIT_COST 
 35. PERCENTAGE_ACTUAL_POP  
-36. PROCESSING_ACPS -- the metropolitan regions ** results sufficient (enough runs) for 5 of them
+36. PROCESSING_ACPS 
 37. STARTING_DAY 
 
 #### Note.
 
+### Tentative only
 To include validation.
 1. X -> omitted_rule = 0
 2. X -> One more row in X for each city with observed values (Y) por higher GDP and smaller inequality

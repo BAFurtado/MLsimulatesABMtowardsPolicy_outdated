@@ -82,6 +82,3 @@ if __name__ == '__main__':
                 ignore_index=True)
 
     df.to_csv('IQR.csv', sep=';')
-
-    # with that we have a csv (on this folder) with the combined information per ACP.
-    # TODO p-value (yet to find a less cumbersome method)
