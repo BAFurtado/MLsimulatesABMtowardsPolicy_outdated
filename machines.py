@@ -38,7 +38,7 @@ def run_classifiers(x, x_test, y, y_test):
 
     models = dict(zip(models, cls))
 
-    # Calculating accuracies and printing
+    # Calculating accuracy and printing
     for key in models.keys():
         print('Score {}: {:.4f}.'.format(key, models[key].score(x_test, y_test)))
         # Examining confusion matrix
