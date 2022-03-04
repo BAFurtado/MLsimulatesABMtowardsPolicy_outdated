@@ -1,0 +1,46 @@
+;min;max;distribution
+Alternative0;;;choice
+Capped low value;0;1;normal
+Capped top value;1;2;normal
+Construction acc cash flow;1;100;normal
+Fpm distribution;;;choice
+Hiring sample size;1;100;normal
+Initial rental price;0;0.01;normal
+Interest;;;choice
+Labor market;0;1;normal
+Loan payment to permanent income;0;1;normal
+Lot cost;0;0.7;normal
+Markup;0;0.5;normal
+Max loan age;50;100;normal
+Max loan bank percent;0;1;normal
+Max loan to value;0;1;normal
+Max offer discount;0.4;1;normal
+Municipal efficiency management;1e-05;0.001;normal
+Neighborhood effect;0;5;normal
+Offer size on price;0;5;normal
+On market decay factor;-0.1;0;normal
+Pct distance hiring;0;1;normal
+Percent construction firms;0;0.2;normal
+Percentage actual pop;0;1;normal
+Percentage entering estate market;0;0.01;normal
+Policies;;;choice
+Policy coefficient;0;0.4;normal
+Policy days;0;3600;normal
+Policy quantile;0;1;normal
+Private transit cost;0;0.5;normal
+Processing acps;;;choice
+Productivity exponent;0;1;normal
+Productivity magnitude divisor;1;20;normal
+Public transit cost;0;0.5;normal
+Rental share;0;1;normal
+Size market;1;100;normal
+Starting day;;;choice
+Sticky prices;0;1;normal
+T licenses per region;;;choice
+Tax consumption;0.1;0.6;normal
+Tax estate transaction;0.0001;0.01;normal
+Tax firm;0.01;0.6;normal
+Tax labor;0.01;0.6;normal
+Tax property;0.0001;0.01;normal
+Total days;1826;14610;normal
+Wage ignore unemployment;;;choice
