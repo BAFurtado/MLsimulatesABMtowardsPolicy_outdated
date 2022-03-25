@@ -44,7 +44,7 @@ MR_dict = {
     'São José do Rio Preto': 'SJRP',
     'Volta Redonda - Barra Mansa': 'Volta Redonda',
     'Campos dos Goytacazes': 'Campos',
-    'Ilhéus – Itabuna': "Ilhéus – Itabuna",
+    'Ilhéus - Itabuna': "Ilhéus–Itabuna",
     'Juiz de Fora': 'Juiz de Fora',
     'Novo Hamburgo - São Leopoldo': 'NH-SL'}
 
@@ -81,7 +81,7 @@ but inverted in the sorted. Lastly we sum the two (alpha=.5) and
                                'gini': gini.loc[gini['cod'] == cod].values[0][2],
                                'gdp': gdp.loc[gdp['Código do Município'] == cod]['PIB'].values[0],
                                'pop': pop.loc[pop['cod'] == cod]['2021'].values[0]}
-                print(current_row)
+                # print(current_row)
                 exit_df = exit_df.append(current_row, ignore_index=True)
             except (RuntimeError, TypeError, NameError, IndexError):
                 print('no', cod, 'municipality on the database')
@@ -90,7 +90,7 @@ but inverted in the sorted. Lastly we sum the two (alpha=.5) and
     return exit_df
 
 
-def MR_ranking(entry_df, alpha=0.5):
+def MR_ranking(entry_df):
     """
     We have to get the ranking for each MR. First we have to get the weighted average GDP and gini for each MR. Then we
     to give points to them: sort (gini inverted) and for the first we give one point, to the second 2 points and so on.
@@ -115,26 +115,28 @@ def MR_ranking(entry_df, alpha=0.5):
                                  temp_df.loc[temp_df['cod'] == cod]['pop'].values[0]
         total_gini = temp_dict['gini'] / total_pop
         new_row = {'MR': MR,
-                                        'gini_r': 0,
-                                        'gdp_r': 0,
-                                        'gini_t': total_gini,
-                                        'gdp_t': temp_df['gdp'].sum()}
-        print(new_row)
+                   'gini_r': 0,
+                   'gdp_r': 0,
+                   'gini_t': total_gini,
+                   'gdp_t': temp_df['gdp'].sum(),
+                   }
+        # print(new_row)
         ranked_MRs = ranked_MRs.append(new_row
                                        , ignore_index=True)
 
-    ranked_MRs = ranked_MRs.sort_values(by='gdp_t')
-    for line in range(0,46):
-        ranked_MRs.iloc[[line]]['gdp_r'].values[0] = line
+    ranked_MRs.sort_values('gdp_t', inplace=True)
+    ranked_MRs['gdp_r'] = list(range(0, 46))  # only solution that I found...
 
-    ranked_MRs = ranked_MRs.sort_values(by='gini_t', ascending=False)
-    for line in range(0, 46):
-        ranked_MRs.iloc[[line]]['gdp_r'].values[0] = line
+    ranked_MRs.sort_values('gini_t', ascending=False, inplace=True)
+    ranked_MRs['gini_r'] = list(range(0, 46))
+
+    ranked_MRs['rank'] = ranked_MRs['gdp_r'] + ranked_MRs['gini_r']
+    ranked_MRs.sort_values('rank', inplace=True, ascending=False)
 
     return ranked_MRs
 
 
 if __name__ == '__main__':
     ready = dataframe_ready('ginibr.csv', 'PIB dos Municípios - base de dados 2010-2019.csv', 'tabela6579.csv')
-    out_df = MR_ranking(ready, alpha=0.5)
+    out_df = MR_ranking(ready)
     out_df.to_csv('actual_rank.csv', index=False, sep=';')
