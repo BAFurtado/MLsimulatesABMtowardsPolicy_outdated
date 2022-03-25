@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 
 MR_dict = {
     'Região Administrativa Integrada de Desenvolvimento do Polo Petrolina/PE e Juazeiro/BA': 'Petrolina-Juazeiro',
@@ -90,7 +91,7 @@ but inverted in the sorted. Lastly we sum the two (alpha=.5) and
     return exit_df
 
 
-def MR_ranking(entry_df):
+def MR_ranking(entry_df, quantile=0.75):
     """
     We have to get the ranking for each MR. First we have to get the weighted average GDP and gini for each MR. Then we
     to give points to them: sort (gini inverted) and for the first we give one point, to the second 2 points and so on.
@@ -132,6 +133,14 @@ def MR_ranking(entry_df):
 
     ranked_MRs['rank'] = ranked_MRs['gdp_r'] + ranked_MRs['gini_r']
     ranked_MRs.sort_values('rank', inplace=True, ascending=False)
+
+    conditions = [(
+        (ranked_MRs['gdp_t'] > ranked_MRs.gdp_t.quantile(quantile)) &
+        (ranked_MRs['gini_t'] < ranked_MRs.gini_t.quantile(quantile))
+    )]
+    ranked_MRs['optimal'] = 0
+
+    ranked_MRs['optimal'] = np.select(conditions, [1])
 
     return ranked_MRs
 
