@@ -1,6 +1,7 @@
-# Machine Learning simulates Agent-based Model towards Policy-Making
+# Outdated
+## Machine Learning simulates Agent-based Model towards Policy-Making
 
-Currently, writing manuscript.
+https://arxiv.org/abs/2203.02576
 
 ### Proposed scheme:
 
