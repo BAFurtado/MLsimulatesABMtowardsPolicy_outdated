@@ -1,6 +1,9 @@
 import pandas as pd
 import numpy as np
 
+# Uberlândia, SJRP, Volta Redonda, NH-SL, Campos, Caxias do Sul, Ilhéus-Itabuna e Juiz de Fora were RMs that were added
+# directly on the database itself
+
 MR_dict = {
     'Região Administrativa Integrada de Desenvolvimento do Polo Petrolina/PE e Juazeiro/BA': 'Petrolina-Juazeiro',
     'Região Integrada de Desenvolvimento da Grande Teresina': 'Teresina',
@@ -59,6 +62,7 @@ but inverted in the sorted. Lastly we sum the two (alpha=.5) and
     :return: a dataframe with the information for each municipality of each of the 46 analyzed MRs (gini, population
     and gdp)
     """
+
     gini = pd.read_csv(gini_csv,
                        sep=';', skiprows=2, encoding='latin-1')
     gdp = pd.read_csv(GDP_csv,
@@ -71,18 +75,17 @@ but inverted in the sorted. Lastly we sum the two (alpha=.5) and
     for cod in gdp['Código do Município'].tolist():
         # iterate over municipal codes
 
-        if gdp.loc[gdp['Código do Município'] == cod]['Região Metropolitana'].values[0] in MR_dict:
+        if cod in MUN_acps['cod_mun'].tolist():
             # if the municipality is within a certain metropolitan region that we analyze, it enters the dataframe
             try:
                 # use the try (there are more municipalities now than in 2010...)
                 current_row = {'cod': cod,
                                'mun': gdp.loc[gdp['Código do Município'] == cod]['Nome do Município'].values[0],
-                               'MR': MR_dict[
-                                   gdp.loc[gdp['Código do Município'] == cod]['Região Metropolitana'].values[0]],
+                               'MR': MUN_acps.loc[MUN_acps['cod_mun'] == cod]['ACPs'].values[0],
                                'gini': gini.loc[gini['cod'] == cod].values[0][2],
                                'gdp': gdp.loc[gdp['Código do Município'] == cod]['PIB'].values[0],
                                'pop': pop.loc[pop['cod'] == cod]['2021'].values[0]}
-                # print(current_row)
+                print(current_row)
                 exit_df = exit_df.append(current_row, ignore_index=True)
             except (RuntimeError, TypeError, NameError, IndexError):
                 print('no', cod, 'municipality on the database')
@@ -104,8 +107,7 @@ def MR_ranking(entry_df, quantile=0.75):
 
     ranked_MRs = pd.DataFrame(columns=['MR', 'gini_r', 'gdp_r', 'gini_t', 'gdp_t', 'rank'])
 
-    for mr in MR_dict:
-        MR = MR_dict[mr]
+    for MR in list(set(MUN_acps['ACPs'].tolist())):
         temp_df = entry_df.loc[entry_df['MR'] == MR]
         total_pop = temp_df['pop'].sum()
         temp_dict = {'MR': MR,
@@ -121,14 +123,17 @@ def MR_ranking(entry_df, quantile=0.75):
                    'gini_t': total_gini,
                    'gdp_t': temp_df['gdp'].sum(),
                    }
-        # print(new_row)
+        print(new_row)
         ranked_MRs = ranked_MRs.append(new_row
                                        , ignore_index=True)
 
     ranked_MRs.sort_values('gdp_t', inplace=True)
-    ranked_MRs['gdp_r'] = list(range(0, 46))  # only solution that I found...
+    print('by gdp:', ranked_MRs['MR'].tolist())
+    ranked_MRs['gdp_r'] = list(range(0, 46))
+
 
     ranked_MRs.sort_values('gini_t', ascending=False, inplace=True)
+    print('by gini:', ranked_MRs['MR'].tolist())
     ranked_MRs['gini_r'] = list(range(0, 46))
 
     ranked_MRs['rank'] = ranked_MRs['gdp_r'] + ranked_MRs['gini_r']
@@ -136,7 +141,7 @@ def MR_ranking(entry_df, quantile=0.75):
 
     conditions = [(
         (ranked_MRs['gdp_t'] > ranked_MRs.gdp_t.quantile(quantile)) &
-        (ranked_MRs['gini_t'] < ranked_MRs.gini_t.quantile(quantile))
+        (ranked_MRs['gini_t'] < ranked_MRs.gini_t.quantile(1 - quantile))
     )]
     ranked_MRs['optimal'] = 0
 
@@ -146,6 +151,8 @@ def MR_ranking(entry_df, quantile=0.75):
 
 
 if __name__ == '__main__':
+    MUN_acps = pd.read_csv('ACPs_MUN_CODES.csv',
+                           sep=';')
     ready = dataframe_ready('ginibr.csv', 'PIB dos Municípios - base de dados 2010-2019.csv', 'tabela6579.csv')
     out_df = MR_ranking(ready)
     out_df.to_csv('actual_rank.csv', index=False, sep=';')
